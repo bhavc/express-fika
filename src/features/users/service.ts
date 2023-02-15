@@ -8,21 +8,12 @@ export const createUserProfile = async ({
 	company: string;
 }) => {
 	try {
-		console.log("userId");
-		// const data = await Db.insertInto("users")
-		// 	.values({
-		// 		id,
-		// 		companyName: company,
-		// 	})
-		// 	.executeTakeFirstOrThrow();
 		const data = await Db.insertInto("users")
 			.values({
 				id,
 				company_name: company,
 			})
 			.executeTakeFirstOrThrow();
-
-		console.log("data", data);
 
 		const userProfile = {
 			company,

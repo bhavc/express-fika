@@ -3,7 +3,7 @@ import { getUser } from "./service";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
 	try {
-		console.log("req", req);
+		console.log("req", req.userId);
 
 		const userId = req.userId;
 		if (!userId) {
@@ -11,7 +11,12 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 		}
 
 		const user = await getUser({ userId });
-		return res.send("success");
+
+		const returnData = {
+			user,
+		};
+
+		return res.status(200).json(returnData);
 	} catch (err) {
 		return res
 			.status(500)

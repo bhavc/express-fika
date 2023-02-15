@@ -11,13 +11,13 @@ export const Authorize = async (
 		// i have the jwt from the header
 		// pull the jwt out
 		const authHeader = req.headers["authorization"];
+		console.log("authHeader", authHeader);
 		if (!authHeader) {
 			return res.status(401).send(`auth.controller:Authorize - Unauthorized`);
 		}
 
 		const bearer = authHeader.split(" ");
 		const bearerToken = bearer[1];
-
 		if (!bearerToken) {
 			return res
 				.status(401)
@@ -37,7 +37,6 @@ export const Authorize = async (
 		}
 
 		const userId = decodedToken.id;
-
 		req.userId = userId;
 
 		next();
@@ -51,6 +50,7 @@ export const Authorize = async (
 export const Register = async (req: Request, res: Response) => {
 	try {
 		const { body } = req;
+
 		if (!body || !body.email || !body.password || !body.role) {
 			return res.status(400).send("AuthController:Register - Missing data");
 		}
@@ -101,7 +101,7 @@ export const Login = async (req: Request, res: Response) => {
 		return res
 			.status(500)
 			.send(
-				`auth.controller:Register - Error registering users ${err.message}`
+				`auth.controller:Login - Error logging in user users ${err.message}`
 			);
 	}
 };

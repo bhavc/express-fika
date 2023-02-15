@@ -43,8 +43,11 @@ export const loginUser = async ({
 			.selectAll()
 			.where("email", "=", email)
 			.execute();
-		console.log("data", data);
+
 		const user = data[0];
+		if (!user) {
+			throw new Error("auth.service:loginUser - User does not exist.");
+		}
 
 		const isSamePassword = await comparePassword(password, user.password);
 		if (!isSamePassword) {
@@ -74,8 +77,6 @@ export const registerUser = async ({
 			.select("id")
 			.where("email", "=", email)
 			.execute();
-
-		console.log("data", data);
 
 		if (data && data.length > 0) {
 			throw new Error(
