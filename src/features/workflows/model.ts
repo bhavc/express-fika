@@ -1,11 +1,11 @@
 import { Generated, ColumnType } from "kysely";
-import { CargoType, LocationType } from "./types";
+import { CargoType, LocationType, WorkflowStatus } from "./types";
 
 // TODO: go over this with mitty
 export interface WorkflowTable {
 	id: Generated<number>;
 	user_for: number;
-	status: string;
+	status: WorkflowStatus;
 	cargo_type: CargoType;
 	pickup_location: string;
 	pickup_location_type: LocationType;

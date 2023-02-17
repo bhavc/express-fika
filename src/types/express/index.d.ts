@@ -5,6 +5,7 @@ declare global {
 		interface Request {
 			user?: Record<string, any>;
 			userId?: string;
+			workflowId?: string;
 		}
 	}
 }

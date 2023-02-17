@@ -17,4 +17,10 @@ export type LocationType =
 	| "Crane"
 	| "Side load";
 
-export type WorkflowStatus = "";
+export type WorkflowStatus =
+	| "Draft"
+	| "Triage"
+	| "In Progress"
+	| "Shipped"
+	| "Cancelled"
+	| "Deleted";
