@@ -1,10 +1,10 @@
-import express, { Express } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import bodyParser from "body-parser";
 
-import { UserRouter } from "./features/users/router";
 import { AuthRouter } from "./features/auth/router";
+import { FileRouter } from "./features/files/router";
+import { UserRouter } from "./features/users/router";
 
 dotenv.config();
 
@@ -22,8 +22,9 @@ const port = process.env.PORT;
 		res.send("Express + TypeScript Server");
 	});
 
-	app.use("/user", UserRouter);
 	app.use("/auth", AuthRouter);
+	app.use("/fileUpload", FileRouter);
+	app.use("/user", UserRouter);
 
 	app.listen(port, () => {
 		console.info(`[server]: Server is running at http://localhost:${port}`);

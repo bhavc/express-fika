@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Request, Response } from "express";
 import { getUser } from "./service";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
