@@ -3,8 +3,6 @@ import { getUser } from "./service";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
 	try {
-		console.log("req", req.userId);
-
 		const userId = req.userId;
 		if (!userId) {
 			return res.status(500).send("users.GetCurrentUser - no userId provided");

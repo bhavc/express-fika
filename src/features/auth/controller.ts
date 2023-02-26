@@ -11,7 +11,7 @@ export const Authorize = async (
 		// i have the jwt from the header
 		// pull the jwt out
 		const authHeader = req.headers["authorization"];
-		console.log("authHeader", authHeader);
+
 		if (!authHeader) {
 			return res.status(401).send(`auth.controller:Authorize - Unauthorized`);
 		}

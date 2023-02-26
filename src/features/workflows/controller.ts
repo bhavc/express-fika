@@ -48,8 +48,6 @@ export const GetWorkflows = async (req: Request, res: Response) => {
 
 export const CreateWorkflow = async (req: Request, res: Response) => {
 	try {
-		console.log("req", req.userId);
-
 		return res.status(200).json();
 	} catch (err) {
 		return res
@@ -60,8 +58,6 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 
 export const EditWorkflow = async (req: Request, res: Response) => {
 	try {
-		console.log("req", req.userId);
-
 		return res.status(200).json();
 	} catch (err) {
 		return res
@@ -72,8 +68,6 @@ export const EditWorkflow = async (req: Request, res: Response) => {
 
 export const DeleteWorkflow = async (req: Request, res: Response) => {
 	try {
-		console.log("req", req.userId);
-
 		return res.status(200).json();
 	} catch (err) {
 		return res

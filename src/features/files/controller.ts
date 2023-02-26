@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 
+import { uploadFiles } from "./service";
+
 export const UploadFile = async (req: Request, res: Response) => {
 	try {
 		console.log("req", req.userId);
@@ -13,7 +15,11 @@ export const UploadFile = async (req: Request, res: Response) => {
 
 		// we want to upload the files to cloud storage here and return the urls
 
-		return res.status(200).json({ message: "great" });
+		const fileList = files as Express.Multer.File[];
+
+		await uploadFiles({ files: fileList });
+
+		return res.status(200).json({ message: "successfully uploaded files" });
 	} catch (err) {
 		return res
 			.status(500)
