@@ -4,9 +4,6 @@ import { uploadFiles } from "./service";
 
 export const UploadFile = async (req: Request, res: Response) => {
 	try {
-		console.log("req", req.userId);
-		console.log("files", req.files);
-
 		const { files } = req;
 
 		if (!files || files.length === 0) {
@@ -17,9 +14,13 @@ export const UploadFile = async (req: Request, res: Response) => {
 
 		const fileList = files as Express.Multer.File[];
 
-		await uploadFiles({ files: fileList });
+		const uploadFileData = await uploadFiles({ files: fileList });
 
-		return res.status(200).json({ message: "successfully uploaded files" });
+		const returnData = {
+			uploadFileData,
+		};
+
+		return res.status(200).json(returnData);
 	} catch (err) {
 		return res
 			.status(500)

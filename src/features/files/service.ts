@@ -1,6 +1,8 @@
 import { Storage } from "@google-cloud/storage";
+import googleCloudCredentials from "../../../GoogleCloudProjectKey.json";
 
 const bucketName = process.env.GOOGLE_CLOUD_BUCKET_NAME;
+const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
 
 const generateFileHash = (originalFileName: string) => {
 	const unixTimeStampMS = Date.now();
@@ -24,32 +26,53 @@ const uploadFileToCloudStorage = async (
 	}
 };
 
-const generatePublicUrl = (blobName: string) => {
-	return `https://storage.cloud.google.com/${bucketName}/${encodeURIComponent(
-		blobName
-	)}`;
+const generateSignedUrl = async (fileName: string) => {
+	try {
+		const storage = new Storage({
+			projectId,
+			credentials: googleCloudCredentials,
+		});
+		// Get a v4 signed URL for reading the file
+		const [signedUrl] = await storage
+			.bucket(bucketName)
+			.file(fileName)
+			.getSignedUrl({
+				version: "v4",
+				action: "read",
+				expires: Date.now() + 15 * 60 * 1000, // 15 mins
+			});
+
+		return await signedUrl;
+	} catch (err) {
+		throw new Error(
+			`files.service: generateSignedUrl - Error storing file ${err.message}`
+		);
+	}
 };
 
-// Puts file into bucket
+// TODO add auth to this route
+// validate file types here
 export const uploadFiles = async ({
 	files,
 }: {
 	files: Express.Multer.File[];
 }) => {
 	try {
-		const fileUrls: string[] = [];
+		const fileData = await Promise.all(
+			files.map(async (file) => {
+				const blobName = generateFileHash(file.originalname);
+				await uploadFileToCloudStorage(blobName, file);
+				const signedUrl = await generateSignedUrl(blobName);
 
-		files.map(async (file) => {
-			const blobName = generateFileHash(file.originalname);
-			console.log("blobName", blobName);
-			const filePublicUrl = generatePublicUrl(blobName);
-			fileUrls.push(filePublicUrl);
-			await uploadFileToCloudStorage(blobName, file);
-		});
+				return {
+					url: signedUrl,
+					name: file.originalname,
+					type: file.mimetype,
+				};
+			})
+		);
 
-		// assuming this is going to work
-		console.log("file urls", fileUrls);
-		return fileUrls;
+		return fileData;
 	} catch (err) {
 		throw new Error(
 			`files.service: uploadFiles - Error storing file ${err.message}`
