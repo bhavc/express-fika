@@ -12,7 +12,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			["id"],
 			(cb) => cb.onDelete("cascade")
 		)
-		.addColumn("status", "varchar", (col) => col.notNull().unique())
+		.addColumn("status", "varchar", (col) => col.notNull())
 		.addColumn("workflowAddressData", "jsonb")
 		.addColumn("workflowContainerData", "jsonb")
 		.addColumn("workflowNotes", "jsonb")

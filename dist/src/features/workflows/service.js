@@ -52,14 +52,17 @@ const createWorkflow = ({ userId, workflowAddressData, workflowContainerData, wo
         console.log(workflowNotes);
         console.log(uploadedFiles);
         const parsedUserId = parseInt(userId, 10);
+        const jsonFiles = uploadedFiles.map((file) => {
+            return JSON.stringify(file);
+        });
         const createdWorkflow = yield database_1.Db.insertInto("workflow")
             .values({
             user_for: parsedUserId,
             status: "Triage",
-            workflowAddressData,
-            workflowContainerData,
-            workflowNotes,
-            file_urls: uploadedFiles,
+            workflowAddressData: (0, database_1.toJson)(workflowAddressData),
+            workflowContainerData: (0, database_1.toJson)(workflowContainerData),
+            workflowNotes: (0, database_1.toJson)(workflowNotes),
+            file_urls: jsonFiles,
         })
             .returningAll()
             .executeTakeFirstOrThrow();

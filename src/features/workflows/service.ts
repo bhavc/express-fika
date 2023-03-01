@@ -95,7 +95,7 @@ export const createWorkflow = async ({
 			.returningAll()
 			.executeTakeFirstOrThrow();
 
-		console.log("createdWorkflow", createdWorkflow);
+		console.log("createdWorkflow", createdWorkflow.file_urls);
 	} catch (err) {
 		throw new Error(
 			`workflow.service: createWorkflow - Error creating workflow ${err.message}`

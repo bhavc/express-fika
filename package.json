@@ -9,10 +9,10 @@
 		"dev": "npx nodemon ./src/index.ts",
 		"start": "node dist/index.js",
 		"cli": "node dist/cli/index.js",
-		"migrate:up": "node dist/cli/index.js migrate -up",
-		"migrate:down": "node dist/cli/index.js migrate -down",
-		"migrate:latest": "node dist/cli/index.js migrate -latest",
-		"migrate:list": "node dist/cli/index.js migrate -list"
+		"migrate:up": "node dist/src/cli/index.js migrate -up",
+		"migrate:down": "node dist/src/cli/index.js migrate -down",
+		"migrate:latest": "node dist/src/cli/index.js migrate -latest",
+		"migrate:list": "node dist/src/cli/index.js migrate -list"
 	},
 	"author": "",
 	"license": "ISC",

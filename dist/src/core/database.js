@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Db = void 0;
+exports.toJson = exports.Db = void 0;
 const pg_1 = require("pg");
 const kysely_1 = require("kysely");
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -16,4 +16,11 @@ exports.Db = new kysely_1.Kysely({
         }),
     }),
 });
+const toJson = (obj) => {
+    return (0, kysely_1.sql) `${JSON.stringify(obj)}`;
+};
+exports.toJson = toJson;
+// export const toJson = <T>(object: T): RawBuilder<T> => {
+// 	return sql`cast (${JSON.stringify(object)} as jsonb)`;
+// };
 //# sourceMappingURL=database.js.map
