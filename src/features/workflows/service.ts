@@ -1,4 +1,5 @@
-import { Db } from "../../core/database";
+import { Db, toJson } from "../../core/database";
+import { sql } from "kysely";
 
 import type {
 	WorkflowAddressDataType,
@@ -78,14 +79,18 @@ export const createWorkflow = async ({
 
 		const parsedUserId = parseInt(userId, 10);
 
+		const jsonFiles = uploadedFiles.map((file) => {
+			return JSON.stringify(file);
+		});
+
 		const createdWorkflow = await Db.insertInto("workflow")
 			.values({
 				user_for: parsedUserId,
 				status: "Triage",
-				workflowAddressData,
-				workflowContainerData,
-				workflowNotes,
-				file_urls: uploadedFiles,
+				workflowAddressData: toJson(workflowAddressData),
+				workflowContainerData: toJson(workflowContainerData),
+				workflowNotes: toJson(workflowNotes),
+				file_urls: jsonFiles,
 			})
 			.returningAll()
 			.executeTakeFirstOrThrow();

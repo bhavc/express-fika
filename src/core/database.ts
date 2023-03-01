@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { Kysely, PostgresDialect } from "kysely";
+import { Kysely, PostgresDialect, RawBuilder, sql } from "kysely";
 import dotenv from "dotenv";
 
 import { Database } from "./types";
@@ -14,3 +14,11 @@ export const Db = new Kysely<Database>({
 		}),
 	}),
 });
+
+export const toJson = <T>(obj: T): RawBuilder<T> => {
+	return sql`${JSON.stringify(obj)}`;
+};
+
+// export const toJson = <T>(object: T): RawBuilder<T> => {
+// 	return sql`cast (${JSON.stringify(object)} as jsonb)`;
+// };
