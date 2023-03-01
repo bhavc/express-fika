@@ -24,19 +24,19 @@ program
 			console.log("This command is not supported");
 		}
 
-		if (options["Up"]) {
+		if (options.Up) {
 			return migrateUp();
 		}
 
-		if (options["Down"]) {
+		if (options.Down) {
 			return migrateDown();
 		}
 
-		if (options["Latest"] || options["L"]) {
+		if (options.Latest || options.L) {
 			return migrateToLatest();
 		}
 
-		if (options["list"] || options["Ls"]) {
+		if (options.list || options.Ls) {
 			return getMigrations();
 		}
 	});

@@ -10,7 +10,7 @@ export const Authorize = async (
 	try {
 		// i have the jwt from the header
 		// pull the jwt out
-		const authHeader = req.headers["authorization"];
+		const authHeader = req.headers.authorization;
 
 		if (!authHeader) {
 			return res.status(401).send(`auth.controller:Authorize - Unauthorized`);
@@ -57,7 +57,7 @@ export const Register = async (req: Request, res: Response) => {
 
 		const { email, password, company, role } = body;
 
-		let user = await registerUser({
+		const user = await registerUser({
 			email,
 			password,
 			role,
@@ -88,7 +88,7 @@ export const Login = async (req: Request, res: Response) => {
 
 		const { email, password } = body;
 
-		let user = await loginUser({ email, password });
+		const user = await loginUser({ email, password });
 
 		const jwtToken = await jwtSign({ id: user.id });
 

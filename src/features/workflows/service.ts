@@ -1,12 +1,19 @@
 import { Db } from "../../core/database";
 
+import type {
+	WorkflowAddressDataType,
+	WorkflowContainerDataType,
+	WorkflowNotesDataType,
+	FileType,
+} from "./types";
+
 export const getWorkflowById = async ({
 	workflowId,
 }: {
 	workflowId: string;
 }) => {
 	try {
-		const workflowIdAsNumber = parseInt(workflowId);
+		const workflowIdAsNumber = parseInt(workflowId, 10);
 
 		const workflow = await Db.selectFrom("workflow")
 			.selectAll()
@@ -29,7 +36,7 @@ export const getWorkflowById = async ({
 
 export const getWorkflowsByUser = async ({ userId }: { userId: string }) => {
 	try {
-		const userIdAsNumber = parseInt(userId);
+		const userIdAsNumber = parseInt(userId, 10);
 
 		const workflows = await Db.selectFrom("workflow")
 			.selectAll()
@@ -46,6 +53,47 @@ export const getWorkflowsByUser = async ({ userId }: { userId: string }) => {
 	} catch (err) {
 		throw new Error(
 			`workflow.service: getWorkflowById - Error getting workflow ${err.message}`
+		);
+	}
+};
+
+export const createWorkflow = async ({
+	userId,
+	workflowAddressData,
+	workflowContainerData,
+	workflowNotes,
+	uploadedFiles,
+}: {
+	userId: string;
+	workflowAddressData: WorkflowAddressDataType;
+	workflowContainerData: WorkflowContainerDataType;
+	workflowNotes: WorkflowNotesDataType;
+	uploadedFiles: FileType[];
+}) => {
+	try {
+		console.log(workflowAddressData);
+		console.log(workflowContainerData);
+		console.log(workflowNotes);
+		console.log(uploadedFiles);
+
+		const parsedUserId = parseInt(userId, 10);
+
+		const createdWorkflow = await Db.insertInto("workflow")
+			.values({
+				user_for: parsedUserId,
+				status: "Triage",
+				workflowAddressData,
+				workflowContainerData,
+				workflowNotes,
+				file_urls: uploadedFiles,
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+
+		console.log("createdWorkflow", createdWorkflow);
+	} catch (err) {
+		throw new Error(
+			`workflow.service: createWorkflow - Error creating workflow ${err.message}`
 		);
 	}
 };

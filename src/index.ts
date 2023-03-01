@@ -5,6 +5,7 @@ import cors from "cors";
 import { AuthRouter } from "./features/auth/router";
 import { FileRouter } from "./features/files/router";
 import { UserRouter } from "./features/users/router";
+import { WorkflowRouter } from "./features/workflows/router";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ const port = process.env.PORT;
 	app.use("/auth", AuthRouter);
 	app.use("/fileUpload", FileRouter);
 	app.use("/user", UserRouter);
+	app.use("/workflow", WorkflowRouter);
 
 	app.listen(port, () => {
 		console.info(`[server]: Server is running at http://localhost:${port}`);

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getWorkflowById, getWorkflowsByUser } from "./service";
+import { getWorkflowById, getWorkflowsByUser, createWorkflow } from "./service";
 
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
@@ -46,8 +46,46 @@ export const GetWorkflows = async (req: Request, res: Response) => {
 	}
 };
 
+// too add generics here
+// interface APIResponse<Data> {
+// 	data: Data;
+// 	message: string;
+// }
+
+//    <Empty, APIResponse, ,>
+
 export const CreateWorkflow = async (req: Request, res: Response) => {
 	try {
+		const userId = req.userId;
+		if (!userId) {
+			return res.status(400).send(`workflows.CreateWorkflow - Missing params`);
+		}
+
+		const { body } = req;
+		const {
+			workflowAddressData,
+			workflowContainerData,
+			workflowNotes,
+			uploadedFiles,
+		} = body;
+
+		if (
+			!workflowAddressData ||
+			!workflowContainerData ||
+			!workflowNotes ||
+			!uploadedFiles
+		) {
+			return res.status(400).send(`workflows.CreateWorkflow - Missing body`);
+		}
+
+		const createWorkflowResult = createWorkflow({
+			userId,
+			workflowAddressData,
+			workflowContainerData,
+			workflowNotes,
+			uploadedFiles,
+		});
+
 		return res.status(200).json();
 	} catch (err) {
 		return res

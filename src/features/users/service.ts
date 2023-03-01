@@ -29,7 +29,7 @@ export const createUserProfile = async ({
 
 export const getUser = async ({ userId }: { userId: string }) => {
 	try {
-		const numericId = parseInt(userId);
+		const numericId = parseInt(userId, 10);
 
 		const data = await Db.selectFrom("users")
 			.selectAll()
