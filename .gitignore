@@ -44,11 +44,6 @@ web_modules/
 # Optional eslint cache
 .eslintcache
 
-# Optional stylelint cache
-.stylelintcache
-
-# Optional REPL history
-.node_repl_history
 
 # Output of 'npm pack'
 *.tgz
@@ -68,16 +63,8 @@ GoogleCloudProjectKey.json
 
 .cache/
 
-
-# Serverless directories
-.serverless/
-
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
+# ts build content
+dist/
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test

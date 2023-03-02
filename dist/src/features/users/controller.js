@@ -11,16 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetCurrentUser = void 0;
 const service_1 = require("./service");
+const service_2 = require("../auth/service");
 const GetCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         if (!userId) {
             return res.status(500).send("users.GetCurrentUser - no userId provided");
         }
+        const userAuth = yield (0, service_2.getUserAuth)({ userId });
         const user = yield (0, service_1.getUser)({ userId });
-        const returnData = {
-            user,
-        };
+        const userData = Object.assign(Object.assign({}, user), { role: userAuth.role });
+        const returnData = Object.assign({}, userData);
         return res.status(200).json(returnData);
     }
     catch (err) {

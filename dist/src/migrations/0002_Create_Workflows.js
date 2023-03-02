@@ -18,7 +18,7 @@ function up(db) {
             .addColumn("id", "serial", (col) => col.primaryKey())
             .addColumn("user_for", "integer", (col) => col.notNull())
             .addForeignKeyConstraint("user_for_constraint", ["user_for"], "users", ["id"], (cb) => cb.onDelete("cascade"))
-            .addColumn("status", "varchar", (col) => col.notNull().unique())
+            .addColumn("status", "varchar", (col) => col.notNull())
             .addColumn("workflowAddressData", "jsonb")
             .addColumn("workflowContainerData", "jsonb")
             .addColumn("workflowNotes", "jsonb")

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = exports.loginUser = exports.jwtVerify = exports.jwtSign = void 0;
+exports.getUserAuth = exports.registerUser = exports.loginUser = exports.jwtVerify = exports.jwtSign = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const database_1 = require("../../core/database");
@@ -96,4 +96,22 @@ const registerUser = ({ email, password, role, }) => __awaiter(void 0, void 0, v
     }
 });
 exports.registerUser = registerUser;
+const getUserAuth = ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const numericId = parseInt(userId, 10);
+        const data = yield database_1.Db.selectFrom("auth")
+            .selectAll()
+            .where("id", "=", numericId)
+            .execute();
+        const user = data[0];
+        if (!user) {
+            throw new Error("auth.service:loginUser - User does not exist.");
+        }
+        return user;
+    }
+    catch (err) {
+        throw new Error(`auth.service:loginUser - Error logging in user ${err.message}`);
+    }
+});
+exports.getUserAuth = getUserAuth;
 //# sourceMappingURL=service.js.map

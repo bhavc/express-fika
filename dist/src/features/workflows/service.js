@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createWorkflow = exports.getWorkflowsByUser = exports.getWorkflowById = void 0;
+exports.createWorkflow = exports.getWorkflowsByUserId = exports.getWorkflowById = void 0;
 const database_1 = require("../../core/database");
 const getWorkflowById = ({ workflowId, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -28,7 +28,7 @@ const getWorkflowById = ({ workflowId, }) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.getWorkflowById = getWorkflowById;
-const getWorkflowsByUser = ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
+const getWorkflowsByUserId = ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userIdAsNumber = parseInt(userId, 10);
         const workflows = yield database_1.Db.selectFrom("workflow")
@@ -44,13 +44,9 @@ const getWorkflowsByUser = ({ userId }) => __awaiter(void 0, void 0, void 0, fun
         throw new Error(`workflow.service: getWorkflowById - Error getting workflow ${err.message}`);
     }
 });
-exports.getWorkflowsByUser = getWorkflowsByUser;
+exports.getWorkflowsByUserId = getWorkflowsByUserId;
 const createWorkflow = ({ userId, workflowAddressData, workflowContainerData, workflowNotes, uploadedFiles, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(workflowAddressData);
-        console.log(workflowContainerData);
-        console.log(workflowNotes);
-        console.log(uploadedFiles);
         const parsedUserId = parseInt(userId, 10);
         const jsonFiles = uploadedFiles.map((file) => {
             return JSON.stringify(file);
@@ -66,7 +62,7 @@ const createWorkflow = ({ userId, workflowAddressData, workflowContainerData, wo
         })
             .returningAll()
             .executeTakeFirstOrThrow();
-        console.log("createdWorkflow", createdWorkflow);
+        return createdWorkflow;
     }
     catch (err) {
         throw new Error(`workflow.service: createWorkflow - Error creating workflow ${err.message}`);

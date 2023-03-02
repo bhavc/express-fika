@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { getWorkflowById, getWorkflowsByUser, createWorkflow } from "./service";
+import {
+	getWorkflowById,
+	getWorkflowsByUserId,
+	createWorkflow,
+} from "./service";
 
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
@@ -32,7 +36,7 @@ export const GetWorkflows = async (req: Request, res: Response) => {
 			return res.status(400).send(`workflows.GetWorkflow - Missing params`);
 		}
 
-		const workflows = await getWorkflowsByUser({ userId });
+		const workflows = await getWorkflowsByUserId({ userId });
 
 		const returnData = {
 			workflows,
@@ -86,7 +90,9 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 			uploadedFiles,
 		});
 
-		return res.status(200).json();
+		return res.status(200).json({
+			message: "Successfully created workflow",
+		});
 	} catch (err) {
 		return res
 			.status(500)

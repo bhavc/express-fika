@@ -37,7 +37,7 @@ const GetWorkflows = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         if (!userId) {
             return res.status(400).send(`workflows.GetWorkflow - Missing params`);
         }
-        const workflows = yield (0, service_1.getWorkflowsByUser)({ userId });
+        const workflows = yield (0, service_1.getWorkflowsByUserId)({ userId });
         const returnData = {
             workflows,
         };
@@ -77,7 +77,9 @@ const CreateWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
             workflowNotes,
             uploadedFiles,
         });
-        return res.status(200).json();
+        return res.status(200).json({
+            message: "Successfully created workflow",
+        });
     }
     catch (err) {
         return res

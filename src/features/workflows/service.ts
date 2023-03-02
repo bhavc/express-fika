@@ -35,7 +35,7 @@ export const getWorkflowById = async ({
 	}
 };
 
-export const getWorkflowsByUser = async ({ userId }: { userId: string }) => {
+export const getWorkflowsByUserId = async ({ userId }: { userId: string }) => {
 	try {
 		const userIdAsNumber = parseInt(userId, 10);
 
@@ -72,11 +72,6 @@ export const createWorkflow = async ({
 	uploadedFiles: FileType[];
 }) => {
 	try {
-		console.log(workflowAddressData);
-		console.log(workflowContainerData);
-		console.log(workflowNotes);
-		console.log(uploadedFiles);
-
 		const parsedUserId = parseInt(userId, 10);
 
 		const jsonFiles = uploadedFiles.map((file) => {
@@ -95,7 +90,7 @@ export const createWorkflow = async ({
 			.returningAll()
 			.executeTakeFirstOrThrow();
 
-		console.log("createdWorkflow", createdWorkflow.file_urls);
+		return createdWorkflow;
 	} catch (err) {
 		throw new Error(
 			`workflow.service: createWorkflow - Error creating workflow ${err.message}`

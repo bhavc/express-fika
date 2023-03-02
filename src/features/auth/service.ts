@@ -112,3 +112,25 @@ export const registerUser = async ({
 		);
 	}
 };
+
+export const getUserAuth = async ({ userId }: { userId: string }) => {
+	try {
+		const numericId = parseInt(userId, 10);
+
+		const data = await Db.selectFrom("auth")
+			.selectAll()
+			.where("id", "=", numericId)
+			.execute();
+
+		const user = data[0];
+		if (!user) {
+			throw new Error("auth.service:loginUser - User does not exist.");
+		}
+
+		return user;
+	} catch (err) {
+		throw new Error(
+			`auth.service:loginUser - Error logging in user ${err.message}`
+		);
+	}
+};
