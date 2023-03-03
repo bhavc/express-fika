@@ -27,7 +27,7 @@ export const createUserProfile = async ({
 	}
 };
 
-export const getUser = async ({ userId }: { userId: string }) => {
+export const getUserProfile = async ({ userId }: { userId: string }) => {
 	try {
 		const numericId = parseInt(userId, 10);
 
@@ -39,7 +39,7 @@ export const getUser = async ({ userId }: { userId: string }) => {
 		return data;
 	} catch (err) {
 		throw new Error(
-			`users.service: getUsers - Error getting users ${err.message}`
+			`users.service: getUserProfile - Error getting users ${err.message}`
 		);
 	}
 };

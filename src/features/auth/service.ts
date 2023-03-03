@@ -45,6 +45,7 @@ export const loginUser = async ({
 			.execute();
 
 		const user = data[0];
+
 		if (!user) {
 			throw new Error("auth.service:loginUser - User does not exist.");
 		}

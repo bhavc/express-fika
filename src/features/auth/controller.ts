@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createUserProfile } from "../users/service";
+import { createUserProfile, getUserProfile } from "../users/service";
 import { jwtSign, jwtVerify, loginUser, registerUser } from "./service";
 
 export const Authorize = async (
@@ -88,12 +88,17 @@ export const Login = async (req: Request, res: Response) => {
 
 		const { email, password } = body;
 
-		const user = await loginUser({ email, password });
+		const userAuth = await loginUser({ email, password });
+		const userProfile = await getUserProfile({ userId: `${userAuth.id}` });
 
-		const jwtToken = await jwtSign({ id: user.id });
+		const jwtToken = await jwtSign({ id: userAuth.id });
 
 		const response = {
 			token: jwtToken,
+			user: {
+				...userProfile,
+				role: userAuth.role,
+			},
 		};
 
 		return res.status(200).json(response);

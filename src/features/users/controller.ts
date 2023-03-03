@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getUser } from "./service";
+import { getUserProfile } from "./service";
 import { getUserAuth } from "../auth/service";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 		}
 
 		const userAuth = await getUserAuth({ userId });
-		const user = await getUser({ userId });
+		const user = await getUserProfile({ userId });
 
 		const userData = {
 			...user,

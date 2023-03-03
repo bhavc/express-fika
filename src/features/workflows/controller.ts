@@ -8,7 +8,8 @@ import {
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
-		const workflowId = req.workflowId;
+
+		const workflowId = req.params.workflowId;
 
 		if (!userId || !workflowId) {
 			return res.status(400).send(`workflows.GetWorkflow - Missing params`);
@@ -17,6 +18,7 @@ export const GetWorkflow = async (req: Request, res: Response) => {
 		const workflow = await getWorkflowById({ workflowId });
 
 		const returnData = {
+			message: "success",
 			workflow,
 		};
 
