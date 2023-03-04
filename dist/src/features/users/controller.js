@@ -19,7 +19,7 @@ const GetCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
             return res.status(500).send("users.GetCurrentUser - no userId provided");
         }
         const userAuth = yield (0, service_2.getUserAuth)({ userId });
-        const user = yield (0, service_1.getUser)({ userId });
+        const user = yield (0, service_1.getUserProfile)({ userId });
         const userData = Object.assign(Object.assign({}, user), { role: userAuth.role });
         const returnData = Object.assign({}, userData);
         return res.status(200).json(returnData);

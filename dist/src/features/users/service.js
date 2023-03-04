@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.createUserProfile = void 0;
+exports.getUserProfile = exports.createUserProfile = void 0;
 const database_1 = require("../../core/database");
 const createUserProfile = ({ id, company, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -29,7 +29,7 @@ const createUserProfile = ({ id, company, }) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.createUserProfile = createUserProfile;
-const getUser = ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserProfile = ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const numericId = parseInt(userId, 10);
         const data = yield database_1.Db.selectFrom("users")
@@ -39,8 +39,8 @@ const getUser = ({ userId }) => __awaiter(void 0, void 0, void 0, function* () {
         return data;
     }
     catch (err) {
-        throw new Error(`users.service: getUsers - Error getting users ${err.message}`);
+        throw new Error(`users.service: getUserProfile - Error getting users ${err.message}`);
     }
 });
-exports.getUser = getUser;
+exports.getUserProfile = getUserProfile;
 //# sourceMappingURL=service.js.map

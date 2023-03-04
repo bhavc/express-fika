@@ -77,10 +77,12 @@ const Login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(400).send("AuthController:Login - Missing data");
         }
         const { email, password } = body;
-        const user = yield (0, service_2.loginUser)({ email, password });
-        const jwtToken = yield (0, service_2.jwtSign)({ id: user.id });
+        const userAuth = yield (0, service_2.loginUser)({ email, password });
+        const userProfile = yield (0, service_1.getUserProfile)({ userId: `${userAuth.id}` });
+        const jwtToken = yield (0, service_2.jwtSign)({ id: userAuth.id });
         const response = {
             token: jwtToken,
+            user: Object.assign(Object.assign({}, userProfile), { role: userAuth.role }),
         };
         return res.status(200).json(response);
     }

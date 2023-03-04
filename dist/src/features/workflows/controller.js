@@ -14,12 +14,13 @@ const service_1 = require("./service");
 const GetWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
-        const workflowId = req.workflowId;
+        const workflowId = req.params.workflowId;
         if (!userId || !workflowId) {
             return res.status(400).send(`workflows.GetWorkflow - Missing params`);
         }
         const workflow = yield (0, service_1.getWorkflowById)({ workflowId });
         const returnData = {
+            message: "success",
             workflow,
         };
         return res.status(200).json(returnData);

@@ -1,3 +1,4 @@
+// TODO This should be a dropdown with countries?
 export type AreasServiced =
 	| "Local"
 	| "Provincial"

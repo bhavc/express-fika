@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    image: fika-api
+    ports:
+      - 3000:3000
+    env_file: .env
+# docker push northamerica-northeast2-docker.pkg.dev/fika-378902/fika-docker-repo/fika-api
