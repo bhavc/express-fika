@@ -84,7 +84,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 			return res.status(400).send(`workflows.CreateWorkflow - Missing body`);
 		}
 
-		const createWorkflowResult = createWorkflow({
+		await createWorkflow({
 			userId,
 			workflowAddressData,
 			workflowContainerData,

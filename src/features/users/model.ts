@@ -1,5 +1,7 @@
 import { Generated, ColumnType } from "kysely";
-import { AreasServiced } from "./types";
+import { AreasServiced, RegionsServiced } from "./types";
+
+// TODO should add an icon?
 
 export interface UserTable {
 	id: Generated<number>;
@@ -14,6 +16,7 @@ export interface UserTable {
 	livetracking_available?: boolean;
 	dashcam_setup?: boolean;
 	areas_serviced: AreasServiced;
+	region_serviced: RegionsServiced;
 	bucket_storage_urls: string[];
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;

@@ -4,3 +4,5 @@ export type AreasServiced =
 	| "Provincial"
 	| "Cross Country"
 	| "Cross Border";
+
+export type RegionsServiced = "North America" | "Africa";

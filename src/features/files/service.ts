@@ -26,7 +26,8 @@ const uploadFileToCloudStorage = async (
 	}
 };
 
-const generateSignedUrl = async (fileName: string) => {
+// TODO: have to change this signed url to refetch on every request
+const generateSignedUrl = async (blobName: string) => {
 	try {
 		const storage = new Storage({
 			projectId,
@@ -35,11 +36,12 @@ const generateSignedUrl = async (fileName: string) => {
 		// Get a v4 signed URL for reading the file
 		const [signedUrl] = await storage
 			.bucket(bucketName)
-			.file(fileName)
+			.file(blobName)
 			.getSignedUrl({
 				version: "v4",
 				action: "read",
-				expires: Date.now() + 15 * 60 * 1000, // 15 mins
+				// expires: Date.now() + 15 * 60 * 1000, // 15 mins
+				expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days, max supported
 			});
 
 		return await signedUrl;
@@ -68,6 +70,7 @@ export const uploadFiles = async ({
 					url: signedUrl,
 					name: file.originalname,
 					type: file.mimetype,
+					blobName,
 				};
 			})
 		);

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 
 import { uploadFiles } from "./service";
 
+// TODO add auth to this route
 export const UploadFile = async (req: Request, res: Response) => {
 	try {
 		const { files } = req;
@@ -10,10 +11,7 @@ export const UploadFile = async (req: Request, res: Response) => {
 			return res.status(400).send("files.UploadFile - No files sent");
 		}
 
-		// we want to upload the files to cloud storage here and return the urls
-
 		const fileList = files as Express.Multer.File[];
-
 		const uploadFileData = await uploadFiles({ files: fileList });
 
 		const returnData = {
