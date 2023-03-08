@@ -49,7 +49,11 @@ const createWorkflow = ({ userId, workflowAddressData, workflowContainerData, wo
     try {
         const parsedUserId = parseInt(userId, 10);
         const jsonFiles = uploadedFiles.map((file) => {
-            return JSON.stringify(file);
+            return JSON.stringify({
+                name: file.name,
+                type: file.type,
+                blobName: file.blobName,
+            });
         });
         const createdWorkflow = yield database_1.Db.insertInto("workflow")
             .values({

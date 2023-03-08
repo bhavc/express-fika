@@ -41,7 +41,7 @@ const generateSignedUrl = async (blobName: string) => {
 				version: "v4",
 				action: "read",
 				// expires: Date.now() + 15 * 60 * 1000, // 15 mins
-				expires: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days, max supported
+				expires: Date.now() + 7 * 24 * 60 * 60, // 7 days, max supported
 			});
 
 		return await signedUrl;

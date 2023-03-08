@@ -15,8 +15,9 @@ export interface UserTable {
 	smartphone_access?: boolean;
 	livetracking_available?: boolean;
 	dashcam_setup?: boolean;
-	areas_serviced: AreasServiced;
-	region_serviced: RegionsServiced;
+	areas_serviced: AreasServiced[];
+	region_serviced: RegionsServiced[];
+	// TODO this needs to be a json of objects
 	bucket_storage_urls: string[];
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;

@@ -32,7 +32,8 @@ const uploadFileToCloudStorage = (blobName, file) => __awaiter(void 0, void 0, v
         throw new Error(`files.service: uploadFileToCloudStorage - Error uploading file ${err.message}`);
     }
 });
-const generateSignedUrl = (fileName) => __awaiter(void 0, void 0, void 0, function* () {
+// TODO: have to change this signed url to refetch on every request
+const generateSignedUrl = (blobName) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const storage = new storage_1.Storage({
             projectId,
@@ -41,11 +42,12 @@ const generateSignedUrl = (fileName) => __awaiter(void 0, void 0, void 0, functi
         // Get a v4 signed URL for reading the file
         const [signedUrl] = yield storage
             .bucket(bucketName)
-            .file(fileName)
+            .file(blobName)
             .getSignedUrl({
             version: "v4",
             action: "read",
-            expires: Date.now() + 15 * 60 * 1000, // 15 mins
+            // expires: Date.now() + 15 * 60 * 1000, // 15 mins
+            expires: Date.now() + 7 * 24 * 60 * 60, // 7 days, max supported
         });
         return yield signedUrl;
     }
@@ -65,6 +67,7 @@ const uploadFiles = ({ files, }) => __awaiter(void 0, void 0, void 0, function* 
                 url: signedUrl,
                 name: file.originalname,
                 type: file.mimetype,
+                blobName,
             };
         })));
         return fileData;

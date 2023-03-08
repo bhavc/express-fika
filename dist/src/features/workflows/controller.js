@@ -71,7 +71,7 @@ const CreateWorkflow = (req, res) => __awaiter(void 0, void 0, void 0, function*
             !uploadedFiles) {
             return res.status(400).send(`workflows.CreateWorkflow - Missing body`);
         }
-        const createWorkflowResult = (0, service_1.createWorkflow)({
+        yield (0, service_1.createWorkflow)({
             userId,
             workflowAddressData,
             workflowContainerData,

@@ -11,13 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadFile = void 0;
 const service_1 = require("./service");
+// TODO add auth to this route
 const UploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { files } = req;
         if (!files || files.length === 0) {
             return res.status(400).send("files.UploadFile - No files sent");
         }
-        // we want to upload the files to cloud storage here and return the urls
         const fileList = files;
         const uploadFileData = yield (0, service_1.uploadFiles)({ files: fileList });
         const returnData = {

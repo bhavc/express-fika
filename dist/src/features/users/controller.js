@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetCurrentUser = void 0;
+exports.EditUser = exports.GetCurrentUser = void 0;
 const service_1 = require("./service");
 const service_2 = require("../auth/service");
 const GetCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -31,4 +31,29 @@ const GetCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.GetCurrentUser = GetCurrentUser;
+const EditUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.userId;
+        if (!userId) {
+            return res.status(500).send("users.EditUser - no userId provided");
+        }
+        if (!req.body) {
+            return res.status(500).send("users.EditUser - no body params provided");
+        }
+        const data = req.body.data;
+        const userAuth = yield (0, service_2.getUserAuth)({ userId });
+        const userRole = userAuth.role;
+        yield (0, service_1.editUserProfile)({ userId, userRole, data });
+        const returnData = {
+            message: "Successfully updated user",
+        };
+        return res.status(200).json(returnData);
+    }
+    catch (err) {
+        return res
+            .status(500)
+            .send(`users.EditUser - Error editing user ${err.message}`);
+    }
+});
+exports.EditUser = EditUser;
 //# sourceMappingURL=controller.js.map

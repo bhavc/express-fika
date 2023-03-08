@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserProfile = exports.createUserProfile = void 0;
+exports.editUserProfile = exports.getUserProfile = exports.createUserProfile = void 0;
 const database_1 = require("../../core/database");
 const createUserProfile = ({ id, company, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -43,4 +43,33 @@ const getUserProfile = ({ userId }) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getUserProfile = getUserProfile;
+const editUserCarrierProfile = ({ userId, carrierData, }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = yield database_1.Db.updateTable("users")
+            .set(carrierData)
+            .where("id", "=", userId)
+            .executeTakeFirstOrThrow();
+        return data.numUpdatedRows;
+    }
+    catch (err) {
+        throw new Error(`users.service: editUserCarrierProfile - Error editing user ${err.message}`);
+    }
+});
+const editUserProfile = ({ userId, userRole, data, }) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const numericId = parseInt(userId, 10);
+        if (userRole === "Carrier") {
+            const carrierData = data;
+            const numUpdatedRows = yield editUserCarrierProfile({
+                userId: numericId,
+                carrierData,
+            });
+            return numUpdatedRows;
+        }
+    }
+    catch (err) {
+        throw new Error(`users.service: editUserProfile - Error editing user ${err.message}`);
+    }
+});
+exports.editUserProfile = editUserProfile;
 //# sourceMappingURL=service.js.map
