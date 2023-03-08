@@ -7,5 +7,6 @@ services:
     ports:
       - 3000:3000
     env_file: .env
-# docker push northamerica-northeast2-docker.pkg.dev/fika-378902/fika-docker-repo/fika-api
 # docker build --platform=linux/amd64 -t fika-api:latest .
+# docker tag fika-api northamerica-northeast2-docker.pkg.dev/fika-378902/fika-docker-repo/fika-api
+# docker push northamerica-northeast2-docker.pkg.dev/fika-378902/fika-docker-repo/fika-api
