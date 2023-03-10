@@ -43,10 +43,18 @@ const kysely_1 = require("kysely");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const migrationFolder = path.join(__dirname, "..", "migrations");
+const user = process.env.POSTGRES_USER;
+const password = process.env.POSTGRES_PASSWORD;
+const database = process.env.POSTGRES_DATABASE;
+const host = process.env.POSTGRES_HOST;
 const db = new kysely_1.Kysely({
     dialect: new kysely_1.PostgresDialect({
         pool: new pg_1.Pool({
-            connectionString: process.env.POSTGRES_CONNECTION_STRING,
+            // connectionString: process.env.POSTGRES_CONNECTION_STRING,
+            user,
+            password,
+            database,
+            host,
         }),
     }),
 });

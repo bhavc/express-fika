@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
+const pg_1 = require("pg");
 const router_1 = require("./features/auth/router");
 const router_2 = require("./features/files/router");
 const router_3 = require("./features/users/router");
@@ -23,10 +24,23 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT;
 (() => __awaiter(void 0, void 0, void 0, function* () {
+    // Check db health and maybe graceful shutdown
+    const db = new pg_1.Pool({
+        user: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        database: process.env.POSTGRES_DATABASE,
+        host: process.env.POSTGRES_HOST,
+    });
+    db.query("SELECT NOW();", (err, res) => {
+        if (err) {
+            console.log("There was an error connecting to db", err);
+            return;
+        }
+        console.log("DB is up at: ", res.rows[0].now);
+        db.end();
+    });
     app.use(express_1.default.urlencoded({ extended: false }));
     app.use(express_1.default.json());
-    // app.use(bodyParser.urlencoded({ extended: false }));
-    // app.use(bodyParser.json());
     app.use((0, cors_1.default)());
     app.get("/", (_, res) => {
         res.send("Express + TypeScript Server");

@@ -23,7 +23,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("id", "serial", (col) => col.primaryKey())
 		.addColumn("first_name", "varchar")
 		.addColumn("last_name", "varchar")
-		.addColumn("company_name", "varchar", (col) => col.unique())
+		.addColumn("company_name", "varchar")
 		.addColumn("phone_number", "varchar")
 		.addColumn("emergency_numbers", sql`varchar[]`)
 		.addColumn("gender", "varchar")

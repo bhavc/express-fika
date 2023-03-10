@@ -15,10 +15,19 @@ dotenv.config();
 
 const migrationFolder = path.join(__dirname, "..", "migrations");
 
+const user = process.env.POSTGRES_USER;
+const password = process.env.POSTGRES_PASSWORD;
+const database = process.env.POSTGRES_DATABASE;
+const host = process.env.POSTGRES_HOST;
+
 const db = new Kysely<Database>({
 	dialect: new PostgresDialect({
 		pool: new Pool({
-			connectionString: process.env.POSTGRES_CONNECTION_STRING,
+			// connectionString: process.env.POSTGRES_CONNECTION_STRING,
+			user,
+			password,
+			database,
+			host,
 		}),
 	}),
 });
