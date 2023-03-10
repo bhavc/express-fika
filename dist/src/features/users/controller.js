@@ -40,7 +40,7 @@ const EditUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!req.body) {
             return res.status(500).send("users.EditUser - no body params provided");
         }
-        const data = req.body.data;
+        const data = req.body;
         const userAuth = yield (0, service_2.getUserAuth)({ userId });
         const userRole = userAuth.role;
         yield (0, service_1.editUserProfile)({ userId, userRole, data });

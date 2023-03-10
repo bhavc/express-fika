@@ -40,7 +40,7 @@ export const EditUser = async (req: Request, res: Response) => {
 			return res.status(500).send("users.EditUser - no body params provided");
 		}
 
-		const data = req.body.data;
+		const data = req.body;
 
 		const userAuth = await getUserAuth({ userId });
 		const userRole = userAuth.role;

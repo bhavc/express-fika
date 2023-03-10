@@ -55,11 +55,71 @@ const editUserCarrierProfile = async ({
 	carrierData: CarrierProfileType;
 }) => {
 	try {
+		console.log("carrier data", carrierData);
+		const {
+			clientCompanyName,
+			clientCompanyAddress,
+			clientCompanyPhone,
+			clientCompanyEmergencyPhone,
+			clientRegionsServiced,
+			clientAreasServiced,
+			clientLanguagesSupported,
+			clientHasSmartphoneAccess,
+			clientHasLiveTracking,
+			clientHasDashcam,
+		} = carrierData;
+
+		const carrierDataDb: { [key: string]: any } = {};
+
+		if (clientCompanyName) {
+			carrierDataDb.company_name = clientCompanyName;
+		}
+
+		if (clientCompanyAddress) {
+			carrierDataDb.company_address = clientCompanyAddress;
+		}
+
+		if (clientCompanyPhone) {
+			carrierDataDb.phone_number = clientCompanyPhone;
+		}
+
+		if (clientCompanyEmergencyPhone) {
+			carrierDataDb.emergency_numbers = clientCompanyEmergencyPhone;
+		}
+
+		if (clientRegionsServiced) {
+			carrierDataDb.region_serviced = clientRegionsServiced;
+		}
+
+		if (clientAreasServiced) {
+			carrierDataDb.areas_serviced = clientAreasServiced;
+		}
+
+		if (clientLanguagesSupported) {
+			const formattedLanguagesSupportedCSV =
+				clientLanguagesSupported.split(",");
+			// const formattedLanguagesSupportedSSV =
+			// 	clientLanguagesSupported.split(" ");
+
+			carrierDataDb.languages_supported = formattedLanguagesSupportedCSV;
+		}
+
+		if (clientHasSmartphoneAccess) {
+			carrierDataDb.smartphone_access = clientHasSmartphoneAccess;
+		}
+
+		if (clientHasLiveTracking) {
+			carrierDataDb.livetracking_available = clientHasLiveTracking;
+		}
+
+		if (clientHasDashcam) {
+			carrierDataDb.dashcam_setup = clientHasDashcam;
+		}
+
 		const data = await Db.updateTable("users")
-			.set(carrierData)
+			.set(carrierDataDb)
 			.where("id", "=", userId)
 			.executeTakeFirstOrThrow();
-
 		return data.numUpdatedRows;
 	} catch (err) {
 		throw new Error(

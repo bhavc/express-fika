@@ -12,9 +12,9 @@ export interface UserTable {
 	emergency_numbers: string[];
 	gender: string;
 	languages_supported: string[]; // this should maybe be a table
-	smartphone_access?: boolean;
-	livetracking_available?: boolean;
-	dashcam_setup?: boolean;
+	has_smartphone_access?: boolean;
+	has_livetracking_available?: boolean;
+	has_dashcam_setup?: boolean;
 	areas_serviced: AreasServiced[];
 	region_serviced: RegionsServiced[];
 	// TODO this needs to be a json of objects

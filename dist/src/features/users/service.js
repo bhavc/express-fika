@@ -45,8 +45,41 @@ const getUserProfile = ({ userId }) => __awaiter(void 0, void 0, void 0, functio
 exports.getUserProfile = getUserProfile;
 const editUserCarrierProfile = ({ userId, carrierData, }) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("carrier data", carrierData);
+        const { clientCompanyName, clientCompanyAddress, clientCompanyPhone, clientCompanyEmergencyPhone, clientRegionsServiced, clientAreasServiced, clientLanguagesSupported, clientHasSmartphoneAccess, clientHasLiveTracking, clientHasDashcam, } = carrierData;
+        const carrierDataDb = {};
+        if (clientCompanyName) {
+            carrierDataDb.company_name = clientCompanyName;
+        }
+        if (clientCompanyAddress) {
+            carrierDataDb.company_address = clientCompanyAddress;
+        }
+        if (clientCompanyPhone) {
+            carrierDataDb.phone_number = clientCompanyPhone;
+        }
+        if (clientCompanyEmergencyPhone) {
+            carrierDataDb.emergency_numbers = clientCompanyEmergencyPhone;
+        }
+        if (clientRegionsServiced) {
+            carrierDataDb.region_serviced = clientRegionsServiced;
+        }
+        if (clientAreasServiced) {
+            carrierDataDb.areas_serviced = clientAreasServiced;
+        }
+        if (clientLanguagesSupported) {
+            carrierDataDb.languages_supported = clientLanguagesSupported;
+        }
+        if (clientHasSmartphoneAccess) {
+            carrierDataDb.smartphone_access = clientHasSmartphoneAccess;
+        }
+        if (clientHasLiveTracking) {
+            carrierDataDb.livetracking_available = clientHasLiveTracking;
+        }
+        if (clientHasDashcam) {
+            carrierDataDb.dashcam_setup = clientHasDashcam;
+        }
         const data = yield database_1.Db.updateTable("users")
-            .set(carrierData)
+            .set(carrierDataDb)
             .where("id", "=", userId)
             .executeTakeFirstOrThrow();
         return data.numUpdatedRows;
