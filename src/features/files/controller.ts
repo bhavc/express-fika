@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 
 import { uploadFiles } from "./service";
 
-// TODO add auth to this route
 export const UploadFile = async (req: Request, res: Response) => {
 	try {
 		const { files } = req;

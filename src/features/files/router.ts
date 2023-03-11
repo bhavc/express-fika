@@ -7,4 +7,4 @@ import { UploadFile } from "./controller";
 export const FileRouter = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
-FileRouter.post("/file", upload.any(), UploadFile);
+FileRouter.post("/file", Authorize, upload.any(), UploadFile);

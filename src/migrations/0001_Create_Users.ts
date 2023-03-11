@@ -34,7 +34,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("has_dashcam_setup", "boolean")
 		.addColumn("areas_serviced", sql`varchar[]`)
 		.addColumn("region_serviced", sql`varchar[]`)
-		.addColumn("bucket_storage_urls", sql`varchar[]`)
+		.addColumn("avatar_image_data", sql`jsonb`)
+		.addColumn("bucket_storage_urls", sql`jsonb[]`)
 		.addColumn("created_at", "timestamp", (col) =>
 			col.defaultTo(sql`now()`).notNull()
 		)

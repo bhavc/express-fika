@@ -1,7 +1,8 @@
-import { Db } from "../../core/database";
+import { Db, toJson } from "../../core/database";
 
-import { Role } from "../auth/types";
-import { CarrierProfileType } from "./types";
+import type { Role } from "../auth/types";
+import type { CarrierProfileType } from "./types";
+import type { FileType } from "../files/type";
 
 export const createUserProfile = async ({
 	id,
@@ -95,13 +96,16 @@ const editUserCarrierProfile = async ({
 			carrierDataDb.areas_serviced = clientAreasServiced;
 		}
 
+		// TODO fix this
 		if (clientLanguagesSupported) {
-			const formattedLanguagesSupportedCSV =
-				clientLanguagesSupported.split(",");
-			// const formattedLanguagesSupportedSSV =
-			// 	clientLanguagesSupported.split(" ");
+			let formattedLanguagesSupported;
+			if (!Array.isArray(clientLanguagesSupported)) {
+				formattedLanguagesSupported = clientLanguagesSupported.split(",");
+			} else {
+				formattedLanguagesSupported = clientLanguagesSupported;
+			}
 
-			carrierDataDb.languages_supported = formattedLanguagesSupportedCSV;
+			carrierDataDb.languages_supported = formattedLanguagesSupported;
 		}
 
 		if (clientHasSmartphoneAccess) {
@@ -153,6 +157,37 @@ export const editUserProfile = async ({
 	} catch (err) {
 		throw new Error(
 			`users.service: editUserProfile - Error editing user ${err.message}`
+		);
+	}
+};
+
+export const editUserProfileImage = async ({
+	userId,
+	profileImageData,
+}: {
+	userId: string;
+	profileImageData: FileType;
+}) => {
+	try {
+		const numericId = parseInt(userId, 10);
+
+		const profileImageDataDb = {
+			name: profileImageData.name,
+			type: profileImageData.type,
+			blobName: profileImageData.blobName,
+		};
+
+		const updateResult = await Db.updateTable("users")
+			.set({
+				avatar_image_data: toJson(profileImageDataDb),
+			})
+			.where("id", "=", numericId)
+			.executeTakeFirstOrThrow();
+
+		return updateResult.numUpdatedRows;
+	} catch (err) {
+		throw new Error(
+			`users.service: editUserProfileImage - Error editing user ${err.message}`
 		);
 	}
 };

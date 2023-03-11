@@ -1,7 +1,6 @@
 import { Generated, ColumnType, RawBuilder } from "kysely";
-import { WorkflowStatus, FileType } from "./types";
+import { WorkflowStatus } from "./types";
 
-// TODO: go over this with mitty
 export interface WorkflowTable {
 	id: Generated<number>;
 	user_for: number;

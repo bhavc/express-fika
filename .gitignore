@@ -66,6 +66,7 @@ GoogleCloudProjectKey.json
 # ts build content
 dist/**/*
 
+
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 

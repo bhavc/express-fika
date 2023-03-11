@@ -4,8 +4,9 @@ import type {
 	WorkflowAddressDataType,
 	WorkflowContainerDataType,
 	WorkflowNotesDataType,
-	FileType,
 } from "./types";
+
+import { FileType } from "../files/type";
 
 export const getWorkflowById = async ({
 	workflowId,

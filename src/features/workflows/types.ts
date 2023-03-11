@@ -55,10 +55,3 @@ export type WorkflowContainerDataType = {
 export type WorkflowNotesDataType = {
 	notes?: string;
 };
-
-export type FileType = {
-	name: string;
-	type: string;
-	url: string;
-	blobName: string;
-};

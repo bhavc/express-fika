@@ -17,8 +17,8 @@ export interface UserTable {
 	has_dashcam_setup?: boolean;
 	areas_serviced: AreasServiced[];
 	region_serviced: RegionsServiced[];
-	// TODO this needs to be a json of objects
-	bucket_storage_urls: string[];
+	avatar_image_data: Record<string, any>;
+	bucket_storage_urls: Record<string, any>[];
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;
 }
