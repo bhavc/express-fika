@@ -1,8 +1,6 @@
 import { Generated, ColumnType } from "kysely";
 import { AreasServiced, RegionsServiced } from "./types";
 
-// TODO should add an icon?
-
 export interface UserTable {
 	id: Generated<number>;
 	first_name?: string;

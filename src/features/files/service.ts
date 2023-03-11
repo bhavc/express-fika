@@ -52,8 +52,7 @@ const generateSignedUrl = async (blobName: string) => {
 	}
 };
 
-// TODO add auth to this route
-// validate file types here
+// TODO validate file types here
 export const uploadFiles = async ({
 	files,
 }: {

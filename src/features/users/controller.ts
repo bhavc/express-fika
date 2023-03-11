@@ -86,7 +86,7 @@ export const EditUserProfileImage = async (req: Request, res: Response) => {
 		await editUserProfileImage({ userId, profileImageData: blobData });
 
 		const returnData = {
-			data: uploadFileData,
+			data: blobData,
 			message: "Successfully updated User Profile Image",
 		};
 
