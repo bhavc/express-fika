@@ -1,7 +1,7 @@
 import { Db, toJson } from "../../core/database";
 
 import type { Role } from "../auth/types";
-import type { CarrierProfileType } from "./types";
+import type { CarrierProfileType, UserProfile } from "./types";
 import type { FileType } from "../files/type";
 
 export const createUserProfile = async ({
@@ -40,7 +40,26 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 			.where("id", "=", numericId)
 			.executeTakeFirstOrThrow();
 
-		return data;
+		const userProfile: UserProfile = {
+			id: data.id,
+			firstName: data.first_name,
+			lastName: data.last_name,
+			companyName: data.company_name,
+			companyAddress: data.company_address,
+			phoneNumber: data.phone_number,
+			emergencyNumbers: data.emergency_numbers,
+			gender: data.gender,
+			languagesSupported: data.languages_supported,
+			hasSmartphoneAccess: data.has_smartphone_access,
+			hasLivetrackingAvailable: data.has_livetracking_available,
+			hasDashcamSetup: data.has_dashcam_setup,
+			areasServiced: data.areas_serviced,
+			regionServiced: data.region_serviced,
+			avatarImageData: data.avatar_image_data,
+			bucketStorageUrls: data.bucket_storage_urls,
+		};
+
+		return userProfile;
 	} catch (err) {
 		throw new Error(
 			`users.service: getUserProfile - Error getting users ${err.message}`
@@ -56,7 +75,6 @@ const editUserCarrierProfile = async ({
 	carrierData: CarrierProfileType;
 }) => {
 	try {
-		console.log("carrier data", carrierData);
 		const {
 			clientCompanyName,
 			clientCompanyAddress,
@@ -109,15 +127,15 @@ const editUserCarrierProfile = async ({
 		}
 
 		if (clientHasSmartphoneAccess) {
-			carrierDataDb.smartphone_access = clientHasSmartphoneAccess;
+			carrierDataDb.has_smartphone_access = clientHasSmartphoneAccess;
 		}
 
 		if (clientHasLiveTracking) {
-			carrierDataDb.livetracking_available = clientHasLiveTracking;
+			carrierDataDb.has_livetracking_available = clientHasLiveTracking;
 		}
 
 		if (clientHasDashcam) {
-			carrierDataDb.dashcam_setup = clientHasDashcam;
+			carrierDataDb.has_dashcam_setup = clientHasDashcam;
 		}
 
 		const data = await Db.updateTable("users")

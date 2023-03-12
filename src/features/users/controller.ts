@@ -15,15 +15,14 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 		}
 
 		const userAuth = await getUserAuth({ userId });
-		const user = await getUserProfile({ userId });
-
-		const userData = {
-			...user,
-			role: userAuth.role,
-		};
+		const userProfile = await getUserProfile({ userId });
 
 		const returnData = {
-			...userData,
+			data: {
+				...userProfile,
+				role: userAuth.role,
+			},
+			message: "Success",
 		};
 
 		return res.status(200).json(returnData);
