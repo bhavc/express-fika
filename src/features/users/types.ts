@@ -4,7 +4,7 @@ export type AreasServiced =
 	| "Cross Country"
 	| "Cross Border";
 
-export type RegionsServiced = "North America" | "Africa";
+export type RegionsServiced = "northAmerica" | "africa";
 
 export type UserProfile = {
 	id: number;

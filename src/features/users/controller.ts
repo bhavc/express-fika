@@ -3,9 +3,11 @@ import {
 	getUserProfile,
 	editUserProfile,
 	editUserProfileImage,
+	getCarriersByRegion,
 } from "./service";
 import { getUserAuth } from "../auth/service";
 import { uploadFiles } from "../files/service";
+import { getGeographicRegionByCountry } from "../groups/service";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
 	try {
@@ -95,6 +97,37 @@ export const EditUserProfileImage = async (req: Request, res: Response) => {
 			.status(500)
 			.send(
 				`user.EditUserProfileImage - Error getting workflow ${err.message}`
+			);
+	}
+};
+
+export const GetCarrierByRegion = async (req: Request, res: Response) => {
+	try {
+		if (!req.params || !req.params.carrierCountry) {
+			return res
+				.status(500)
+				.send("user.GetCarrierByRegion - no carrier country provided");
+		}
+
+		const carrierCountry = req.params.carrierCountry;
+		const geographicRegion = await getGeographicRegionByCountry({
+			carrierCountry,
+		});
+		const carrierProfiles = await getCarriersByRegion({
+			geographicRegion,
+		});
+
+		const returnData = {
+			data: carrierProfiles,
+			message: "Success",
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`user.GetCarrierByRegion - Error getting carriers by geographic region ${err.message}`
 			);
 	}
 };

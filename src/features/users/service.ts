@@ -1,4 +1,5 @@
 import { Db, toJson } from "../../core/database";
+import { sql } from "kysely";
 
 import type { Role } from "../auth/types";
 import type { CarrierProfileType, UserProfile } from "./types";
@@ -54,7 +55,7 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 			hasLivetrackingAvailable: data.has_livetracking_available,
 			hasDashcamSetup: data.has_dashcam_setup,
 			areasServiced: data.areas_serviced,
-			regionServiced: data.region_serviced,
+			regionServiced: data.regions_serviced,
 			avatarImageData: data.avatar_image_data,
 			bucketStorageUrls: data.bucket_storage_urls,
 		};
@@ -107,7 +108,7 @@ const editUserCarrierProfile = async ({
 		}
 
 		if (clientRegionsServiced) {
-			carrierDataDb.region_serviced = clientRegionsServiced;
+			carrierDataDb.regions_serviced = clientRegionsServiced;
 		}
 
 		if (clientAreasServiced) {
@@ -206,6 +207,43 @@ export const editUserProfileImage = async ({
 	} catch (err) {
 		throw new Error(
 			`users.service: editUserProfileImage - Error editing user ${err.message}`
+		);
+	}
+};
+
+export const getCarriersByRegion = async ({
+	geographicRegion,
+}: {
+	geographicRegion: string;
+}) => {
+	try {
+		const result = await Db.selectFrom("users")
+			.selectAll()
+			.where(sql`${geographicRegion} = ANY (areas_serviced)`)
+			.execute();
+
+		const carrierProfiles = result.map((carrier) => {
+			return {
+				id: carrier.id,
+				companyName: carrier.company_name,
+				companyAddress: carrier.company_address,
+				phoneNumber: carrier.phone_number,
+				emergencyNumbers: carrier.emergency_numbers,
+				languagesSupported: carrier.languages_supported,
+				hasSmartphoneAccess: carrier.has_smartphone_access,
+				hasLivetrackingAvailable: carrier.has_livetracking_available,
+				hasDashcamSetup: carrier.has_dashcam_setup,
+				areasServiced: carrier.areas_serviced,
+				regionServiced: carrier.regions_serviced,
+				avatarImageData: carrier.avatar_image_data,
+				bucketStorageUrls: carrier.bucket_storage_urls,
+			};
+		});
+
+		return carrierProfiles;
+	} catch (err) {
+		throw new Error(
+			`users.service: getCarriersByRegion - Error gettings carriers ${err.message}`
 		);
 	}
 };

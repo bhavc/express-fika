@@ -15,7 +15,7 @@ export interface UserTable {
 	has_livetracking_available?: boolean;
 	has_dashcam_setup?: boolean;
 	areas_serviced: AreasServiced[];
-	region_serviced: RegionsServiced[];
+	regions_serviced: RegionsServiced[];
 	avatar_image_data: Record<string, any>;
 	bucket_storage_urls: Record<string, any>[];
 	created_at: ColumnType<Date, string | undefined, never>;

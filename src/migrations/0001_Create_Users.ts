@@ -33,7 +33,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("has_livetracking_available", "boolean")
 		.addColumn("has_dashcam_setup", "boolean")
 		.addColumn("areas_serviced", sql`varchar[]`)
-		.addColumn("region_serviced", sql`varchar[]`)
+		.addColumn("regions_serviced", sql`varchar[]`)
 		.addColumn("avatar_image_data", sql`jsonb`)
 		.addColumn("bucket_storage_urls", sql`jsonb[]`)
 		.addColumn("created_at", "timestamp", (col) =>

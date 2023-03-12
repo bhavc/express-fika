@@ -1,7 +1,12 @@
 import express from "express";
 import multer from "multer";
 
-import { GetCurrentUser, EditUser, EditUserProfileImage } from "./controller";
+import {
+	GetCurrentUser,
+	EditUser,
+	EditUserProfileImage,
+	GetCarrierByRegion,
+} from "./controller";
 import { Authorize } from "../auth/controller";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -15,4 +20,9 @@ UserRouter.post(
 	Authorize,
 	upload.any(),
 	EditUserProfileImage
+);
+UserRouter.get(
+	"/getCarrierByRegion/:carrierCountry",
+	Authorize,
+	GetCarrierByRegion
 );
