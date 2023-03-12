@@ -57,6 +57,7 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 			areasServiced: data.areas_serviced,
 			regionServiced: data.regions_serviced,
 			avatarImageData: data.avatar_image_data,
+			insuranceFileData: data.insurance_file_data,
 			bucketStorageUrls: data.bucket_storage_urls,
 		};
 
@@ -81,6 +82,7 @@ const editUserCarrierProfile = async ({
 			clientCompanyAddress,
 			clientCompanyPhone,
 			clientCompanyEmergencyPhone,
+			carrierInsuranceFiles,
 			clientRegionsServiced,
 			clientAreasServiced,
 			clientLanguagesSupported,
@@ -104,7 +106,18 @@ const editUserCarrierProfile = async ({
 		}
 
 		if (clientCompanyEmergencyPhone) {
-			carrierDataDb.emergency_numbers = clientCompanyEmergencyPhone;
+			carrierDataDb.emergency_numbers = [clientCompanyEmergencyPhone];
+		}
+
+		// TODO: check this, might need to be converted to JSON
+		if (carrierInsuranceFiles) {
+			carrierDataDb.insurance_file_data = carrierInsuranceFiles.map((file) => {
+				return {
+					name: file.name,
+					type: file.type,
+					blobName: file.blobName,
+				};
+			});
 		}
 
 		if (clientRegionsServiced) {

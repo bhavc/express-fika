@@ -6,8 +6,9 @@ import {
 	getCarriersByRegion,
 } from "./service";
 import { getUserAuth } from "../auth/service";
-import { uploadFiles } from "../files/service";
+import { generateSignedUrl, uploadFiles } from "../files/service";
 import { getGeographicRegionByCountry } from "../groups/service";
+import { FileType } from "../files/type";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
 	try {
@@ -18,6 +19,25 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 
 		const userAuth = await getUserAuth({ userId });
 		const userProfile = await getUserProfile({ userId });
+
+		const userAvatarData = userProfile.avatarImageData;
+		if (userAvatarData) {
+			const signedFileUrl = await generateSignedUrl(
+				userProfile.avatarImageData.blobName
+			);
+
+			userProfile.avatarImageData.url = signedFileUrl;
+		}
+
+		const userInsuranceFileData = userProfile.insuranceFileData as FileType[];
+		if (userInsuranceFileData && userInsuranceFileData.length > 0) {
+			for (let i = 0; i < userInsuranceFileData.length; i++) {
+				const insuranceFile = userInsuranceFileData[i];
+
+				const signedFileUrl = await generateSignedUrl(insuranceFile.blobName);
+				insuranceFile.url = signedFileUrl;
+			}
+		}
 
 		const returnData = {
 			data: {

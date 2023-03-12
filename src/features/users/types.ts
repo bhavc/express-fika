@@ -1,3 +1,5 @@
+import { FileType } from "../files/type";
+
 export type AreasServiced =
 	| "Local"
 	| "Provincial"
@@ -22,6 +24,7 @@ export type UserProfile = {
 	areasServiced?: AreasServiced[];
 	regionServiced?: RegionsServiced[];
 	avatarImageData?: { [key: string]: any };
+	insuranceFileData?: { [key: string]: any }[];
 	bucketStorageUrls?: { [key: string]: any };
 	created_at?: string;
 	modified_at?: string;
@@ -32,6 +35,7 @@ export type CarrierProfileType = {
 	clientCompanyAddress?: string;
 	clientCompanyPhone?: string;
 	clientCompanyEmergencyPhone?: string[];
+	carrierInsuranceFiles: FileType[];
 	clientRegionsServiced?: RegionsServiced[];
 	clientAreasServiced?: AreasServiced[];
 	clientLanguagesSupported?: string;
