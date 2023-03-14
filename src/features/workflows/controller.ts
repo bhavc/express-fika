@@ -33,6 +33,7 @@ export const GetWorkflow = async (req: Request, res: Response) => {
 export const GetWorkflows = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
+		// const searchValue = req.query.search;
 
 		if (!userId) {
 			return res.status(400).send(`workflows.GetWorkflow - Missing params`);

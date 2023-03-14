@@ -18,7 +18,11 @@ export const getWorkflowById = async ({
 
 		const result = await Db.selectFrom("workflow")
 			.innerJoin("users", "users.id", "workflow.user_for")
-			.selectAll()
+			.selectAll("workflow")
+			.select([
+				"users.id as carrier_id",
+				"users.company_name as carrier_company_name",
+			])
 			.where("workflow.id", "=", workflowIdAsNumber)
 			.executeTakeFirstOrThrow();
 
@@ -33,20 +37,8 @@ export const getWorkflowById = async ({
 			userId: result.user_for,
 			status: result.status,
 			selectedCarrier: {
-				id: result.selected_carrier,
-				companyName: result.company_name,
-				companyAddress: result.company_address,
-				companyPhone: result.phone_number,
-				emergencyPhone: result.emergency_numbers,
-				languagesSupported: result.languages_supported,
-				hasSmartphoneAccess: result.has_smartphone_access,
-				hasLivetrackingAvailable: result.has_livetracking_available,
-				hasDashcamSetup: result.has_dashcam_setup,
-				areasServiced: result.areas_serviced,
-				regionsServiced: result.regions_serviced,
-				avatarImageData: result.avatar_image_data,
-				insuranceFileData: result.insurance_file_data,
-				bucketStorageUrls: result.bucket_storage_urls,
+				id: result.carrier_id,
+				companyName: result.carrier_company_name,
 			},
 			workflowAddressData: result.workflow_address_data,
 			workflowContainerData: result.workflow_container_data,
@@ -62,12 +54,23 @@ export const getWorkflowById = async ({
 	}
 };
 
-export const getWorkflowsByUserId = async ({ userId }: { userId: string }) => {
+export const getWorkflowsByUserId = async ({
+	userId,
+	searchValue,
+}: {
+	userId: string;
+	searchValue?: string;
+}) => {
 	try {
 		const userIdAsNumber = parseInt(userId, 10);
 
 		const result = await Db.selectFrom("workflow")
-			.selectAll()
+			.leftJoin("users as carrier", "carrier.id", "workflow.user_for")
+			.selectAll("workflow")
+			.select([
+				"carrier.id as carrier_id",
+				"carrier.company_name as carrier_company_name",
+			])
 			.where("user_for", "=", userIdAsNumber)
 			.execute();
 
@@ -82,7 +85,10 @@ export const getWorkflowsByUserId = async ({ userId }: { userId: string }) => {
 				id: workflow.id,
 				userId: workflow.user_for,
 				status: workflow.status,
-				selectedCarrier: workflow.selected_carrier,
+				selectedCarrier: {
+					id: workflow.carrier_id,
+					companyName: workflow.carrier_company_name,
+				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
 				workflowNotes: workflow.workflow_notes,
