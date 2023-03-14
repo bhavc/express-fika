@@ -13,9 +13,17 @@ export async function up(db: Kysely<any>): Promise<void> {
 			(cb) => cb.onDelete("cascade")
 		)
 		.addColumn("status", "varchar", (col) => col.notNull())
-		.addColumn("workflowAddressData", "jsonb")
-		.addColumn("workflowContainerData", "jsonb")
-		.addColumn("workflowNotes", "jsonb")
+		.addColumn("selected_carrier", "integer", (col) => col.notNull())
+		.addForeignKeyConstraint(
+			"selected_carrier_constraint",
+			["selected_carrier"],
+			"users",
+			["id"],
+			(cb) => cb.onDelete("cascade")
+		)
+		.addColumn("workflow_address_data", "jsonb")
+		.addColumn("workflow_container_data", "jsonb")
+		.addColumn("workflow_notes", "jsonb")
 		.addColumn("file_urls", sql`jsonb[]`)
 		.addColumn("created_at", "timestamp", (col) =>
 			col.defaultTo(sql`now()`).notNull()

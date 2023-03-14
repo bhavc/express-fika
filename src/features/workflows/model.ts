@@ -5,9 +5,10 @@ export interface WorkflowTable {
 	id: Generated<number>;
 	user_for: number;
 	status: WorkflowStatus;
-	workflowAddressData: Record<string, any>;
-	workflowContainerData: Record<string, any>;
-	workflowNotes: Record<string, any>;
+	selected_carrier: number;
+	workflow_address_data: Record<string, any>;
+	workflow_container_data: Record<string, any>;
+	workflow_notes: Record<string, any>;
 	file_urls: ColumnType<string[]>;
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;

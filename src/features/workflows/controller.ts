@@ -72,6 +72,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 			workflowAddressData,
 			workflowContainerData,
 			workflowNotes,
+			selectedCarrier,
 			uploadedFiles,
 		} = body;
 
@@ -79,6 +80,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 			!workflowAddressData ||
 			!workflowContainerData ||
 			!workflowNotes ||
+			!selectedCarrier ||
 			!uploadedFiles
 		) {
 			return res.status(400).send(`workflows.CreateWorkflow - Missing body`);
@@ -89,6 +91,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 			workflowAddressData,
 			workflowContainerData,
 			workflowNotes,
+			selectedCarrier,
 			uploadedFiles,
 		});
 
