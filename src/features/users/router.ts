@@ -21,8 +21,4 @@ UserRouter.post(
 	upload.any(),
 	EditUserProfileImage
 );
-UserRouter.get(
-	"/getCarrierByRegion/:carrierCountry",
-	Authorize,
-	GetCarrierByRegion
-);
+UserRouter.get("/getCarrierByRegion", Authorize, GetCarrierByRegion);

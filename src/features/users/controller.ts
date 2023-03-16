@@ -123,18 +123,26 @@ export const EditUserProfileImage = async (req: Request, res: Response) => {
 
 export const GetCarrierByRegion = async (req: Request, res: Response) => {
 	try {
-		if (!req.params || !req.params.carrierCountry) {
+		if (!req.query || !req.query.pickupCountry || !req.query.dropoffCountry) {
 			return res
 				.status(500)
-				.send("user.GetCarrierByRegion - no carrier country provided");
+				.send(
+					"user.GetCarrierByRegion - provide both pickup and dropoff countries"
+				);
 		}
 
-		const carrierCountry = req.params.carrierCountry;
+		const pickupCountry = req.query.pickupCountry as string;
+		const dropoffCountry = req.query.dropoffCountry as string;
+
 		const geographicRegion = await getGeographicRegionByCountry({
-			carrierCountry,
+			carrierCountry: pickupCountry,
 		});
+
+		const isWithinCountry = pickupCountry === dropoffCountry;
+
 		const carrierProfiles = await getCarriersByRegion({
 			geographicRegion,
+			isWithinCountry,
 		});
 
 		const returnData = {

@@ -226,13 +226,23 @@ export const editUserProfileImage = async ({
 
 export const getCarriersByRegion = async ({
 	geographicRegion,
+	isWithinCountry,
 }: {
 	geographicRegion: string;
+	isWithinCountry: boolean;
 }) => {
 	try {
+		let query;
+		console.log("geographicRegion", geographicRegion);
+		if (isWithinCountry) {
+			query = sql`${geographicRegion} = ANY (areas_serviced)`;
+		} else {
+			query = sql`${geographicRegion} = ANY (areas_serviced) AND 'crossBorder' = ANY (regions_serviced)`;
+		}
+
 		const result = await Db.selectFrom("users")
 			.selectAll()
-			.where(sql`${geographicRegion} = ANY (areas_serviced)`)
+			.where(query)
 			.execute();
 
 		const carrierProfiles = result.map((carrier) => {

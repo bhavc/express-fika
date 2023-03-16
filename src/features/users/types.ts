@@ -1,10 +1,6 @@
 import { FileType } from "../files/type";
 
-export type AreasServiced =
-	| "Local"
-	| "Provincial"
-	| "Cross Country"
-	| "Cross Border";
+export type AreasServiced = "local" | "crossProvince" | "crossBorder";
 
 export type RegionsServiced = "northAmerica" | "africa";
 
