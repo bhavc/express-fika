@@ -137,14 +137,16 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 
 export const EditWorkflow = async (req: Request, res: Response) => {
 	try {
-		const userId = req.userId;
-		if (!userId) {
-			return res.status(400).send(`workflows.CreateWorkflow - Missing params`);
+		const workflowId = req.params.id;
+		if (!workflowId) {
+			return res
+				.status(400)
+				.send(`workflows.EditWorkflow - Missing workflow Id`);
 		}
 
 		const { body } = req;
 
-		await editWorkflow({ userId, data: body });
+		await editWorkflow({ workflowId, data: body });
 
 		const returnData = {
 			message: "Successfully updated workflow",

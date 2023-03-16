@@ -214,24 +214,31 @@ export const createWorkflow = async ({
 };
 
 export const editWorkflow = async ({
-	userId,
+	workflowId,
 	data,
 }: {
-	userId: string;
+	workflowId: string;
 	data: unknown;
 }) => {
 	try {
-		const numericId = parseInt(userId, 10);
+		const numericId = parseInt(workflowId, 10);
 
 		const workflowData = data as WorkflowType;
 
-		const { status } = workflowData;
+		const { status, carrierNotes } = workflowData;
 
 		const workflowDataDb: { [key: string]: any } = {};
 
 		if (status) {
 			workflowDataDb.status = status;
 		}
+
+		// TODO: add this column
+		// if (carrierNotes) {
+		// 	workflowDataDb.carrierNotes = carrierNotes;
+		// }
+
+		console.log("workflowDataDb", workflowDataDb);
 
 		const result = await Db.updateTable("workflow")
 			.set(workflowDataDb)

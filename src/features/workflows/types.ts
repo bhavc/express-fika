@@ -66,7 +66,10 @@ export type WorkflowType = {
 	status: WorkflowStatus;
 	workflowAddressData: WorkflowAddressDataType;
 	workflowContainerData: WorkflowContainerDataType;
+	// TODO change workflow notes to shipper notes
 	workflowNotes: WorkflowNotesDataType;
+	// TODO add carrier notes
+	carrierNotes: string;
 	uploadedFiles: FileType[];
 	fileUrls: FileType[];
 	createdAt: string;

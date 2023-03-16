@@ -233,7 +233,6 @@ export const getCarriersByRegion = async ({
 }) => {
 	try {
 		let query;
-		console.log("geographicRegion", geographicRegion);
 		if (isWithinCountry) {
 			query = sql`${geographicRegion} = ANY (areas_serviced)`;
 		} else {
