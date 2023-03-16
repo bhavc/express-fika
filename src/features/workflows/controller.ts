@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import {
 	getWorkflowById,
 	getWorkflowsByUserId,
+	getWorkflowsByCarrierId,
 	createWorkflow,
+	editWorkflow,
 } from "./service";
 
 export const GetWorkflow = async (req: Request, res: Response) => {
@@ -30,7 +32,7 @@ export const GetWorkflow = async (req: Request, res: Response) => {
 	}
 };
 
-export const GetWorkflows = async (req: Request, res: Response) => {
+export const GetWorkflowsUserFor = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
 		// const searchValue = req.query.search;
@@ -49,7 +51,34 @@ export const GetWorkflows = async (req: Request, res: Response) => {
 	} catch (err) {
 		return res
 			.status(500)
-			.send(`workflows.GetWorkflows - Error getting workflow ${err.message}`);
+			.send(
+				`workflows.GetWorkflowsUserFor - Error getting workflow ${err.message}`
+			);
+	}
+};
+
+export const GetWorkflowsCarrierFor = async (req: Request, res: Response) => {
+	try {
+		const carrierId = req.userId;
+		if (!carrierId) {
+			return res
+				.status(400)
+				.send(`workflows.GetWorkflowsCarrierFor - Missing params`);
+		}
+
+		const workflows = await getWorkflowsByCarrierId({ carrierId });
+
+		const returnData = {
+			workflows,
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`workflows.GetWorkflowsCarrierFor - Error getting workflow ${err.message}`
+			);
 	}
 };
 
@@ -108,7 +137,20 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 
 export const EditWorkflow = async (req: Request, res: Response) => {
 	try {
-		return res.status(200).json();
+		const userId = req.userId;
+		if (!userId) {
+			return res.status(400).send(`workflows.CreateWorkflow - Missing params`);
+		}
+
+		const { body } = req;
+
+		await editWorkflow({ userId, data: body });
+
+		const returnData = {
+			message: "Successfully updated workflow",
+		};
+
+		return res.status(200).json(returnData);
 	} catch (err) {
 		return res
 			.status(500)

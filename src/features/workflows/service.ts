@@ -4,6 +4,7 @@ import type {
 	WorkflowAddressDataType,
 	WorkflowContainerDataType,
 	WorkflowNotesDataType,
+	WorkflowType,
 } from "./types";
 import type { UserProfile } from "../users/types";
 import type { FileType } from "../files/type";
@@ -105,6 +106,55 @@ export const getWorkflowsByUserId = async ({
 	}
 };
 
+export const getWorkflowsByCarrierId = async ({
+	carrierId,
+}: {
+	carrierId: string;
+}) => {
+	try {
+		const carrierIdAsNumber = parseInt(carrierId, 10);
+
+		const result = await Db.selectFrom("workflow")
+			.leftJoin("users as carrier", "carrier.id", "workflow.user_for")
+			.selectAll("workflow")
+			.select([
+				"carrier.id as carrier_id",
+				"carrier.company_name as carrier_company_name",
+			])
+			.where("workflow.selected_carrier", "=", carrierIdAsNumber)
+			.execute();
+
+		if (!result) {
+			throw new Error(
+				`workflow.service: getWorkflowsByCarrierId - Error getting workflow`
+			);
+		}
+
+		const workflows = result.map((workflow) => {
+			return {
+				id: workflow.id,
+				userId: workflow.user_for,
+				status: workflow.status,
+				selectedCarrier: {
+					id: workflow.carrier_id,
+					companyName: workflow.carrier_company_name,
+				},
+				workflowAddressData: workflow.workflow_address_data,
+				workflowContainerData: workflow.workflow_container_data,
+				workflowNotes: workflow.workflow_notes,
+				fileUrls: workflow.file_urls,
+				createdAt: workflow.created_at,
+			};
+		});
+
+		return workflows;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: getWorkflowById - Error getting workflow ${err.message}`
+		);
+	}
+};
+
 export const createWorkflow = async ({
 	userId,
 	workflowAddressData,
@@ -159,6 +209,39 @@ export const createWorkflow = async ({
 	} catch (err) {
 		throw new Error(
 			`workflow.service: createWorkflow - Error creating workflow ${err.message}`
+		);
+	}
+};
+
+export const editWorkflow = async ({
+	userId,
+	data,
+}: {
+	userId: string;
+	data: unknown;
+}) => {
+	try {
+		const numericId = parseInt(userId, 10);
+
+		const workflowData = data as WorkflowType;
+
+		const { status } = workflowData;
+
+		const workflowDataDb: { [key: string]: any } = {};
+
+		if (status) {
+			workflowDataDb.status = status;
+		}
+
+		const result = await Db.updateTable("workflow")
+			.set(workflowDataDb)
+			.where("id", "=", numericId)
+			.executeTakeFirstOrThrow();
+
+		return result.numUpdatedRows;
+	} catch (err) {
+		throw new Error(
+			`users.service: editUserProfile - Error editing user ${err.message}`
 		);
 	}
 };

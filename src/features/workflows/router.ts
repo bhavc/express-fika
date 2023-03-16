@@ -1,7 +1,8 @@
 import express from "express";
 import {
 	GetWorkflow,
-	GetWorkflows,
+	GetWorkflowsUserFor,
+	GetWorkflowsCarrierFor,
 	CreateWorkflow,
 	EditWorkflow,
 	DeleteWorkflow,
@@ -10,7 +11,8 @@ import { Authorize } from "../auth/controller";
 
 export const WorkflowRouter = express.Router();
 
-WorkflowRouter.get("/", Authorize, GetWorkflows);
+WorkflowRouter.get("/", Authorize, GetWorkflowsUserFor);
+WorkflowRouter.get("/carrierFor", Authorize, GetWorkflowsCarrierFor);
 WorkflowRouter.get("/:workflowId", Authorize, GetWorkflow);
 WorkflowRouter.post("/", Authorize, CreateWorkflow);
 WorkflowRouter.patch("/:id", Authorize, EditWorkflow);

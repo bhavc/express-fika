@@ -1,8 +1,12 @@
+import type { FileType } from "../files/type";
+
 export type WorkflowStatus =
 	| "Draft"
 	| "Triage"
+	| "Allocated"
 	| "In Progress"
 	| "Shipped"
+	| "Rejected"
 	| "Cancelled"
 	| "Deleted";
 
@@ -54,4 +58,17 @@ export type WorkflowContainerDataType = {
 
 export type WorkflowNotesDataType = {
 	notes?: string;
+};
+
+export type WorkflowType = {
+	id: string;
+	user_for: string;
+	status: WorkflowStatus;
+	workflowAddressData: WorkflowAddressDataType;
+	workflowContainerData: WorkflowContainerDataType;
+	workflowNotes: WorkflowNotesDataType;
+	uploadedFiles: FileType[];
+	fileUrls: FileType[];
+	createdAt: string;
+	modifiedAt: string;
 };
