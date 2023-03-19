@@ -8,7 +8,6 @@ export const createPaymentForWorkflow = async ({
 	price: number;
 }) => {
 	try {
-		console.log("save payment");
 		const result = await Db.insertInto("payment")
 			.values({
 				workflow_id: workflowId,

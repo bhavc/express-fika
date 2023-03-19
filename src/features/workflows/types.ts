@@ -57,7 +57,8 @@ export type WorkflowContainerDataType = {
 };
 
 export type WorkflowNotesDataType = {
-	notes?: string;
+	shipperNotes?: string;
+	carrierNotes?: string;
 };
 
 export type WorkflowType = {
@@ -66,9 +67,7 @@ export type WorkflowType = {
 	status: WorkflowStatus;
 	workflowAddressData: WorkflowAddressDataType;
 	workflowContainerData: WorkflowContainerDataType;
-	// TODO change workflow notes to shipper notes
 	workflowNotes: WorkflowNotesDataType;
-	// TODO add carrier notes
 	carrierNotes: string;
 	uploadedFiles: FileType[];
 	fileUrls: FileType[];

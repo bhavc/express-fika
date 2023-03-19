@@ -3,7 +3,6 @@ import { Db, toJson } from "../../core/database";
 import type {
 	WorkflowAddressDataType,
 	WorkflowContainerDataType,
-	WorkflowNotesDataType,
 	WorkflowType,
 } from "./types";
 import type { UserProfile } from "../users/types";
@@ -43,7 +42,8 @@ export const getWorkflowById = async ({
 			},
 			workflowAddressData: result.workflow_address_data,
 			workflowContainerData: result.workflow_container_data,
-			workflowNotes: result.workflow_notes,
+			shipperNotes: result.shipper_notes,
+			carrierNotes: result.carrier_notes,
 			fileUrls: result.file_urls,
 		};
 
@@ -92,7 +92,8 @@ export const getWorkflowsByUserId = async ({
 				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
-				workflowNotes: workflow.workflow_notes,
+				shipperNotes: workflow.shipper_notes,
+				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
 				createdAt: workflow.created_at,
 			};
@@ -141,7 +142,8 @@ export const getWorkflowsByCarrierId = async ({
 				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
-				workflowNotes: workflow.workflow_notes,
+				shipperNotes: workflow.shipper_notes,
+				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
 				createdAt: workflow.created_at,
 			};
@@ -159,14 +161,14 @@ export const createWorkflow = async ({
 	userId,
 	workflowAddressData,
 	workflowContainerData,
-	workflowNotes,
+	shipperNotes,
 	selectedCarrier,
 	uploadedFiles,
 }: {
 	userId: string;
 	workflowAddressData: WorkflowAddressDataType;
 	workflowContainerData: WorkflowContainerDataType;
-	workflowNotes: WorkflowNotesDataType;
+	shipperNotes?: string;
 	selectedCarrier: UserProfile;
 	uploadedFiles: FileType[];
 }) => {
@@ -188,7 +190,7 @@ export const createWorkflow = async ({
 				selected_carrier: selectedCarrier.id,
 				workflow_address_data: toJson(workflowAddressData),
 				workflow_container_data: toJson(workflowContainerData),
-				workflow_notes: toJson(workflowNotes),
+				shipper_notes: shipperNotes,
 				file_urls: jsonFiles,
 			})
 			.returningAll()
@@ -201,7 +203,8 @@ export const createWorkflow = async ({
 			selectedCarrier: result.selected_carrier,
 			workflowAddressData: result.workflow_address_data,
 			workflowContainerData: result.workflow_container_data,
-			workflowNotes: result.workflow_notes,
+			shipperNotes: result.shipper_notes,
+			carrierNotes: result.carrier_notes,
 			fileUrls: result.file_urls,
 		};
 
@@ -215,15 +218,13 @@ export const createWorkflow = async ({
 
 export const editWorkflow = async ({
 	workflowId,
-	data,
+	workflowData,
 }: {
 	workflowId: string;
-	data: unknown;
+	workflowData: WorkflowType;
 }) => {
 	try {
 		const numericId = parseInt(workflowId, 10);
-
-		const workflowData = data as WorkflowType;
 
 		const { status, carrierNotes } = workflowData;
 
@@ -233,10 +234,9 @@ export const editWorkflow = async ({
 			workflowDataDb.status = status;
 		}
 
-		// TODO: add this column
-		// if (carrierNotes) {
-		// 	workflowDataDb.carrierNotes = carrierNotes;
-		// }
+		if (carrierNotes) {
+			workflowDataDb.carrier_notes = carrierNotes;
+		}
 
 		const result = await Db.updateTable("workflow")
 			.set(workflowDataDb)
@@ -246,7 +246,7 @@ export const editWorkflow = async ({
 		return result.numUpdatedRows;
 	} catch (err) {
 		throw new Error(
-			`users.service: editUserProfile - Error editing user ${err.message}`
+			`users.service: editWorkflow - Error editing user ${err.message}`
 		);
 	}
 };

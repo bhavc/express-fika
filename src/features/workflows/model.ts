@@ -8,7 +8,8 @@ export interface WorkflowTable {
 	selected_carrier: number;
 	workflow_address_data: Record<string, any>;
 	workflow_container_data: Record<string, any>;
-	workflow_notes: Record<string, any>;
+	shipper_notes: string;
+	carrier_notes: string;
 	file_urls: ColumnType<string[]>;
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;

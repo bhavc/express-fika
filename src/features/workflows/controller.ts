@@ -7,6 +7,10 @@ import {
 	editWorkflow,
 } from "./service";
 
+import { createPaymentForWorkflow } from "../payment/service";
+
+import type { WorkflowType } from "./types";
+
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
@@ -101,7 +105,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 		const {
 			workflowAddressData,
 			workflowContainerData,
-			workflowNotes,
+			shipperNotes,
 			selectedCarrier,
 			uploadedFiles,
 		} = body;
@@ -109,21 +113,23 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 		if (
 			!workflowAddressData ||
 			!workflowContainerData ||
-			!workflowNotes ||
 			!selectedCarrier ||
 			!uploadedFiles
 		) {
 			return res.status(400).send(`workflows.CreateWorkflow - Missing body`);
 		}
 
-		await createWorkflow({
+		const workflow = await createWorkflow({
 			userId,
 			workflowAddressData,
 			workflowContainerData,
-			workflowNotes,
+			shipperNotes,
 			selectedCarrier,
 			uploadedFiles,
 		});
+
+		// TODO split out the price stuff
+		await createPaymentForWorkflow({ workflowId: workflow.id });
 
 		return res.status(200).json({
 			message: "Successfully created workflow",
@@ -145,8 +151,9 @@ export const EditWorkflow = async (req: Request, res: Response) => {
 		}
 
 		const { body } = req;
+		const workflowData = body.workflow as WorkflowType;
 
-		await editWorkflow({ workflowId, data: body });
+		await editWorkflow({ workflowId, workflowData });
 
 		const returnData = {
 			message: "Successfully updated workflow",

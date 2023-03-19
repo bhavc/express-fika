@@ -23,7 +23,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 		)
 		.addColumn("workflow_address_data", "jsonb")
 		.addColumn("workflow_container_data", "jsonb")
-		.addColumn("workflow_notes", "jsonb")
+		.addColumn("shipper_notes", "varchar")
+		.addColumn("carrier_notes", "varchar")
 		.addColumn("file_urls", sql`jsonb[]`)
 		.addColumn("created_at", "timestamp", (col) =>
 			col.defaultTo(sql`now()`).notNull()
