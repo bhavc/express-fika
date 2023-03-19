@@ -238,8 +238,6 @@ export const editWorkflow = async ({
 		// 	workflowDataDb.carrierNotes = carrierNotes;
 		// }
 
-		console.log("workflowDataDb", workflowDataDb);
-
 		const result = await Db.updateTable("workflow")
 			.set(workflowDataDb)
 			.where("id", "=", numericId)
