@@ -31,8 +31,6 @@ export type WorkflowAddressDataType = {
 };
 
 export type WorkflowContainerDataType = {
-	useCustomPricing?: boolean;
-	customPrice?: string;
 	goodsDescription: string;
 	cargoType: string; // TODO this is not showing the string
 	length: string;

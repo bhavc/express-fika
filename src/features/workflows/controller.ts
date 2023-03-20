@@ -7,7 +7,10 @@ import {
 	editWorkflow,
 } from "./service";
 
-import { createPaymentForWorkflow } from "../payment/service";
+import {
+	createPaymentByWorkflowId,
+	getPaymentByWorkflowId,
+} from "../payment/service";
 
 import type { WorkflowType } from "./types";
 
@@ -22,10 +25,16 @@ export const GetWorkflow = async (req: Request, res: Response) => {
 		}
 
 		const workflow = await getWorkflowById({ workflowId });
+		const payment = await getPaymentByWorkflowId({ workflowId });
+
+		const workflowToFe = {
+			...workflow,
+			workflowPriceData: payment,
+		};
 
 		const returnData = {
 			message: "success",
-			workflow,
+			workflow: workflowToFe,
 		};
 
 		return res.status(200).json(returnData);
@@ -105,6 +114,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 		const {
 			workflowAddressData,
 			workflowContainerData,
+			workflowPriceData,
 			shipperNotes,
 			selectedCarrier,
 			uploadedFiles,
@@ -113,6 +123,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 		if (
 			!workflowAddressData ||
 			!workflowContainerData ||
+			!workflowPriceData ||
 			!selectedCarrier ||
 			!uploadedFiles
 		) {
@@ -128,8 +139,11 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 			uploadedFiles,
 		});
 
-		// TODO split out the price stuff
-		await createPaymentForWorkflow({ workflowId: workflow.id });
+		// TODO maybe workflow should point to payment instead of other way around
+		await createPaymentByWorkflowId({
+			workflowId: workflow.id,
+			workflowPriceData,
+		});
 
 		return res.status(200).json({
 			message: "Successfully created workflow",

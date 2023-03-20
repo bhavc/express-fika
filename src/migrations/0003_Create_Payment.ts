@@ -19,6 +19,14 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("accepted_by_shipper", "boolean", (col) =>
 			col.notNull().defaultTo("false")
 		)
+		.addColumn("bid_turn", "integer")
+		.addForeignKeyConstraint(
+			"bid_turn_constraint",
+			["bid_turn"],
+			"user",
+			["id"],
+			(cb) => cb.onDelete("cascade")
+		)
 		.addColumn("accepted_date", "timestamp")
 		.addColumn("created_at", "timestamp", (col) =>
 			col.defaultTo(sql`now()`).notNull()
