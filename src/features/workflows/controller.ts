@@ -10,9 +10,11 @@ import {
 import {
 	createPaymentByWorkflowId,
 	getPaymentByWorkflowId,
+	editPaymentByWorkflowId,
 } from "../payment/service";
 
 import type { WorkflowType } from "./types";
+import type { EditPaymentType } from "../payment/types";
 
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
@@ -166,8 +168,11 @@ export const EditWorkflow = async (req: Request, res: Response) => {
 
 		const { body } = req;
 		const workflowData = body.workflow as WorkflowType;
+		const editPaymentData = body.payment as EditPaymentType;
 
 		await editWorkflow({ workflowId, workflowData });
+
+		await editPaymentByWorkflowId({ workflowId, editPaymentData });
 
 		const returnData = {
 			message: "Successfully updated workflow",

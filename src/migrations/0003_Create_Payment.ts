@@ -23,7 +23,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addForeignKeyConstraint(
 			"bid_turn_constraint",
 			["bid_turn"],
-			"user",
+			"users",
 			["id"],
 			(cb) => cb.onDelete("cascade")
 		)

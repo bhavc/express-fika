@@ -1,6 +1,6 @@
 import { Db } from "../../core/database";
 
-import { PaymentType } from "./types";
+import { PaymentType, EditPaymentType } from "./types";
 
 // TODO we will update the price as users go back and forth
 
@@ -87,6 +87,60 @@ export const getPaymentByWorkflowId = async ({
 	} catch (err) {
 		throw new Error(
 			`payment.service: createPaymentForWorkflow - Error creating payment for workflow ${err.message}`
+		);
+	}
+};
+
+export const editPaymentByWorkflowId = async ({
+	workflowId,
+	editPaymentData,
+}: {
+	workflowId: string;
+	editPaymentData: EditPaymentType;
+}) => {
+	try {
+		const workflowIdAsNumber = parseInt(workflowId, 10);
+
+		const paymentDataDb: { [key: string]: any } = {};
+
+		// acceptedPrice, update the price
+		// update the accepted_by_carrier and accepted_by_shipper
+		// and accepted date
+		if (editPaymentData.acceptedPrice) {
+			paymentDataDb.price = editPaymentData.acceptedPrice;
+			paymentDataDb.accepted_by_carrier = true;
+			paymentDataDb.accepted_by_shipper = true;
+			paymentDataDb.accepted_date = new Date();
+		} else if (editPaymentData.carrierQuote) {
+			// if carrierQuoteRequest, update the price,
+			// update the accepted_by_carrier and accepted_by_shipper
+			// and accepted date
+			paymentDataDb.price = editPaymentData.carrierQuote;
+			paymentDataDb.accepted_by_carrier = true;
+			paymentDataDb.accepted_by_shipper = true;
+			paymentDataDb.accepted_date = new Date();
+		} else if (editPaymentData.declineShipment) {
+			// if declien in shipment from shipper side,
+			// set price as null and no one accepted anything
+			// TODO: maybe add a declined date or remove alltogether
+			// all allow bidding for as much as possible
+			paymentDataDb.price = null;
+			paymentDataDb.accepted_by_carrier = false;
+			paymentDataDb.accepted_by_shipper = false;
+		} else {
+			paymentDataDb.price = editPaymentData.carrierCounter;
+			paymentDataDb.bid_turn = editPaymentData.bidTurn;
+		}
+
+		await Db.updateTable("payment")
+			.set(paymentDataDb)
+			.where("workflow_id", "=", workflowIdAsNumber)
+			.executeTakeFirstOrThrow();
+
+		return;
+	} catch (err) {
+		throw new Error(
+			`payment.service: editPaymentByWorkflowId - Error creating payment for workflow ${err.message}`
 		);
 	}
 };
