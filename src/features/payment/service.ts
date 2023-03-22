@@ -124,7 +124,6 @@ export const editPaymentByWorkflowId = async ({
 			// set price as null and no one accepted anything
 			// TODO: maybe add a declined date or remove alltogether
 			// all allow bidding for as much as possible
-			paymentDataDb.price = null;
 			paymentDataDb.accepted_by_carrier = false;
 			paymentDataDb.accepted_by_shipper = false;
 		} else {
