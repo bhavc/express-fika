@@ -1,11 +1,11 @@
 FROM node as builder
 
 WORKDIR /src
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm
-RUN pnpm install --frozen-lockfile --prod
+COPY package.json yarn.lock ./
+# RUN npm install -g yarn
+RUN yarn install --frozen-lockfile
 COPY . .
-RUN pnpm run build
+RUN yarn run build
 COPY .env /dist/.env
 
 # builder
@@ -13,9 +13,9 @@ COPY .env /dist/.env
 FROM node:slim
 
 WORKDIR /src
-COPY package.json pnpm-lock.yaml ./
-RUN npm install -g pnpm
-RUN pnpm install
+COPY package.json yarn.lock ./
+# RUN npm install -g yarn
+RUN yarn install --frozen-lockfile
 
 COPY --from=builder /src/dist ./dist
 

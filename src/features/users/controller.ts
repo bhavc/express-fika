@@ -31,9 +31,7 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 
 		const userInsuranceFileData = userProfile.insuranceFileData as FileType[];
 		if (userInsuranceFileData && userInsuranceFileData.length > 0) {
-			for (let i = 0; i < userInsuranceFileData.length; i++) {
-				const insuranceFile = userInsuranceFileData[i];
-
+			for (const insuranceFile of userInsuranceFileData) {
 				const signedFileUrl = await generateSignedUrl(insuranceFile.blobName);
 				insuranceFile.url = signedFileUrl;
 			}
