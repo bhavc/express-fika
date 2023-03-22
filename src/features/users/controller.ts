@@ -41,6 +41,7 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 			data: {
 				...userProfile,
 				role: userAuth.role,
+				status: userAuth.status,
 			},
 			message: "Success",
 		};

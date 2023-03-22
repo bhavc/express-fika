@@ -63,7 +63,7 @@ export const loginUser = async ({
 	}
 };
 
-export const registerUser = async ({
+export const createAuthUser = async ({
 	email,
 	password,
 	role,
@@ -73,7 +73,6 @@ export const registerUser = async ({
 	role: Role;
 }) => {
 	try {
-		// create function that will create user depending on role
 		const data = await Db.selectFrom("auth")
 			.select("id")
 			.where("email", "=", email)
@@ -81,11 +80,15 @@ export const registerUser = async ({
 
 		if (data && data.length > 0) {
 			throw new Error(
-				`auth.service:registerUser - a user is already registered with this email`
+				`auth.service:createAuthUser - a user is already registered with this email`
 			);
 		}
 
-		const status: Status = "Activated";
+		// TODO we will put all users that are not admins into pending
+		const registerStatus: Status = ["Carrier", "Driver"].includes(role)
+			? "Pending"
+			: "Activated";
+
 		const hashedPassword = await hashPassword(password);
 
 		const { id: userId } = await Db.insertInto("auth")
@@ -93,7 +96,7 @@ export const registerUser = async ({
 				email,
 				password: hashedPassword,
 				role,
-				status,
+				status: registerStatus,
 			})
 			.returning("id")
 			.executeTakeFirstOrThrow();
@@ -109,7 +112,7 @@ export const registerUser = async ({
 		return user;
 	} catch (err) {
 		throw new Error(
-			`auth.service:registerUser - Error registering user ${err.message}`
+			`auth.service:createAuthUser - Error registering user ${err.message}`
 		);
 	}
 };

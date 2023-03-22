@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { createUserProfile, getUserProfile } from "../users/service";
-import { jwtSign, jwtVerify, loginUser, registerUser } from "./service";
+import { jwtSign, jwtVerify, loginUser, createAuthUser } from "./service";
 
 export const Authorize = async (
 	req: Request,
@@ -8,8 +8,6 @@ export const Authorize = async (
 	next: NextFunction
 ) => {
 	try {
-		// i have the jwt from the header
-		// pull the jwt out
 		const authHeader = req.headers.authorization;
 
 		if (!authHeader) {
@@ -57,7 +55,7 @@ export const Register = async (req: Request, res: Response) => {
 
 		const { email, password, company, role } = body;
 
-		const user = await registerUser({
+		const user = await createAuthUser({
 			email,
 			password,
 			role,
