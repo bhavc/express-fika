@@ -1,6 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { createUserProfile, getUserProfile } from "../users/service";
-import { jwtSign, jwtVerify, loginUser, createAuthUser } from "./service";
+import {
+	jwtSign,
+	jwtVerify,
+	loginUser,
+	createAuthUser,
+	createAuthDriver,
+} from "./service";
 
 export const Authorize = async (
 	req: Request,
@@ -105,6 +111,54 @@ export const Login = async (req: Request, res: Response) => {
 			.status(500)
 			.send(
 				`auth.controller:Login - Error logging in user users ${err.message}`
+			);
+	}
+};
+
+export const OnboardDriver = async (req: Request, res: Response) => {
+	try {
+		const { body } = req;
+		const {
+			driverAddress,
+			driverEmail,
+			driverEmergencyPhone,
+			driverFirstName,
+			driverLastName,
+			driverPassword,
+			driverPhone,
+			driverUsername,
+		} = body;
+
+		if (!body || !driverUsername || !driverPassword || !driverPhone) {
+			return res
+				.status(400)
+				.send("AuthController:OnboardDriver - Missing required driver data");
+		}
+
+		const authDriver = await createAuthDriver({
+			driverPassword,
+			driverPhone,
+			driverUsername,
+		});
+
+		// TODO:
+		// create new column on auth/user for driver or make new table
+		// store what users company is
+		// store the users address in its own column?
+
+		// makes sense to seperate out tables for carriers and shippers
+		// make a table for companies as well as a group
+
+		const response = {
+			message: "Successfully created user",
+		};
+
+		return res.status(200).json(response);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`auth.controller:Register - Error registering users ${err.message}`
 			);
 	}
 };

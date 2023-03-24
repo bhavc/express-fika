@@ -46,7 +46,7 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 			firstName: data.first_name,
 			lastName: data.last_name,
 			companyName: data.company_name,
-			companyAddress: data.company_address,
+			companyAddress: data.address,
 			phoneNumber: data.phone_number,
 			emergencyNumbers: data.emergency_numbers,
 			gender: data.gender,
@@ -98,7 +98,7 @@ const editUserCarrierProfile = async ({
 		}
 
 		if (clientCompanyAddress) {
-			carrierDataDb.company_address = clientCompanyAddress;
+			carrierDataDb.address = clientCompanyAddress;
 		}
 
 		if (clientCompanyPhone) {
@@ -248,7 +248,7 @@ export const getCarriersByRegion = async ({
 			return {
 				id: carrier.id,
 				companyName: carrier.company_name,
-				companyAddress: carrier.company_address,
+				companyAddress: carrier.address,
 				phoneNumber: carrier.phone_number,
 				emergencyNumbers: carrier.emergency_numbers,
 				languagesSupported: carrier.languages_supported,

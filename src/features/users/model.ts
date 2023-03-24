@@ -6,7 +6,7 @@ export interface UserTable {
 	first_name?: string;
 	last_name?: string | null;
 	company_name?: string; // this should maybe be a table
-	company_address?: string;
+	address?: string;
 	phone_number?: string;
 	emergency_numbers: string[];
 	gender: string;

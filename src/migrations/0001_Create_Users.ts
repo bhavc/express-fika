@@ -24,7 +24,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("first_name", "varchar")
 		.addColumn("last_name", "varchar")
 		.addColumn("company_name", "varchar")
-		.addColumn("company_address", "varchar")
+		.addColumn("address", "varchar")
 		.addColumn("phone_number", "varchar")
 		.addColumn("emergency_numbers", sql`varchar[]`)
 		.addColumn("gender", "varchar")

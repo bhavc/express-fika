@@ -138,3 +138,63 @@ export const getUserAuth = async ({ userId }: { userId: string }) => {
 		);
 	}
 };
+
+export const createAuthDriver = async ({
+	driverEmail,
+	driverPassword,
+	driverUsername,
+}: {
+	driverAddress?: string;
+	driverEmail?: string;
+	driverEmergencyPhone?: string;
+	driverFirstName?: string;
+	driverLastName?: string;
+	driverPassword: string;
+	driverPhone: string;
+	driverUsername: string;
+}) => {
+	try {
+		const previousUsernameResult = await Db.selectFrom("auth")
+			.select("id")
+			.where("username", "=", driverUsername)
+			.execute();
+
+		if (previousUsernameResult && previousUsernameResult.length > 0) {
+			throw new Error(
+				`auth.service:createAuthUser - a user is already registered with this email`
+			);
+		}
+
+		// TODO we will put all users that are not admins into pending
+		const driverStatus: Status = "Pending";
+		const driverRole: Role = "Driver";
+
+		const hashedPassword = await hashPassword(driverPassword);
+
+		const createAuthDriverResult = await Db.insertInto("auth")
+			.values({
+				email: driverEmail,
+				username: driverUsername,
+				password: hashedPassword,
+				role: driverRole,
+				status: driverStatus,
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+
+		const user = {
+			id: createAuthDriverResult.id,
+			email: createAuthDriverResult.email,
+			username: createAuthDriverResult.username,
+			password: hashedPassword,
+			role: createAuthDriverResult.role,
+			status: createAuthDriverResult.status,
+		};
+
+		return user;
+	} catch (err) {
+		throw new Error(
+			`auth.service:createAuthUser - Error registering user ${err.message}`
+		);
+	}
+};
