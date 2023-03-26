@@ -39,3 +39,7 @@ export type CarrierProfileType = {
 	clientHasLiveTracking?: boolean;
 	clientHasDashcam?: boolean;
 };
+
+export type DriverType = {
+	driverCompanyName?: string;
+};

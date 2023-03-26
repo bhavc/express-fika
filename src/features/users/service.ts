@@ -2,7 +2,7 @@ import { Db, toJson } from "../../core/database";
 import { sql } from "kysely";
 
 import type { Role } from "../auth/types";
-import type { CarrierProfileType, UserProfile } from "./types";
+import type { CarrierProfileType, DriverType, UserProfile } from "./types";
 import type { FileType } from "../files/type";
 
 export const createUserProfile = async ({
@@ -87,6 +87,34 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 	} catch (err) {
 		throw new Error(
 			`users.service: getUserProfile - Error getting users ${err.message}`
+		);
+	}
+};
+
+const editUserDriverProfile = async ({
+	userId,
+	driverData,
+}: {
+	userId: number;
+	driverData: DriverType;
+}) => {
+	try {
+		const { driverCompanyName } = driverData;
+
+		const driverDataDb: { [key: string]: any } = {};
+
+		if (driverCompanyName) {
+			driverDataDb.company_name = driverCompanyName;
+		}
+
+		const data = await Db.updateTable("users")
+			.set(driverDataDb)
+			.where("id", "=", userId)
+			.executeTakeFirstOrThrow();
+		return data.numUpdatedRows;
+	} catch (err) {
+		throw new Error(
+			`users.service: editUserCarrierProfile - Error editing user ${err.message}`
 		);
 	}
 };
@@ -204,6 +232,15 @@ export const editUserProfile = async ({
 			const numUpdatedRows = await editUserCarrierProfile({
 				userId: numericId,
 				carrierData,
+			});
+
+			return numUpdatedRows;
+		} else if (userRole === "Driver") {
+			const driverData = data as DriverType;
+
+			const numUpdatedRows = await editUserDriverProfile({
+				userId: numericId,
+				driverData,
 			});
 
 			return numUpdatedRows;

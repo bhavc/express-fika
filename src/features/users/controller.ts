@@ -55,15 +55,61 @@ export const GetCurrentUser = async (req: Request, res: Response) => {
 	}
 };
 
-export const EditUser = async (req: Request, res: Response) => {
+export const GetUserById = async (req: Request, res: Response) => {
+	try {
+		const userId = req.params.id;
+		if (!userId) {
+			return res.status(500).send("users.GetUserById - no userId provided");
+		}
+
+		const userAuth = await getUserAuth({ userId });
+		const { password, ...restUserAuth } = userAuth;
+		const userProfile = await getUserProfile({ userId });
+
+		const userAvatarData = userProfile.avatarImageData;
+		if (userAvatarData) {
+			const signedFileUrl = await generateSignedUrl(
+				userProfile.avatarImageData.blobName
+			);
+
+			userProfile.avatarImageData.url = signedFileUrl;
+		}
+
+		const userInsuranceFileData = userProfile.insuranceFileData as FileType[];
+		if (userInsuranceFileData && userInsuranceFileData.length > 0) {
+			for (const insuranceFile of userInsuranceFileData) {
+				const signedFileUrl = await generateSignedUrl(insuranceFile.blobName);
+				insuranceFile.url = signedFileUrl;
+			}
+		}
+
+		const returnData = {
+			data: {
+				...userProfile,
+				...restUserAuth,
+			},
+			message: "Success",
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(`users.GetUserById - Error getting users ${err.message}`);
+	}
+};
+
+export const EditCurrentUser = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
 		if (!userId) {
-			return res.status(500).send("users.EditUser - no userId provided");
+			return res.status(500).send("users.EditCurrentUser - no userId provided");
 		}
 
 		if (!req.body) {
-			return res.status(500).send("users.EditUser - no body params provided");
+			return res
+				.status(500)
+				.send("users.EditCurrentUser - no body params provided");
 		}
 
 		const data = req.body;
@@ -81,7 +127,39 @@ export const EditUser = async (req: Request, res: Response) => {
 	} catch (err) {
 		return res
 			.status(500)
-			.send(`users.EditUser - Error editing user ${err.message}`);
+			.send(`users.EditCurrentUser - Error editing user ${err.message}`);
+	}
+};
+
+export const EditUserById = async (req: Request, res: Response) => {
+	try {
+		const userId = req.params.id;
+		if (!userId) {
+			return res.status(500).send("users.EditUserById - no userId provided");
+		}
+
+		if (!req.body) {
+			return res
+				.status(500)
+				.send("users.EditUserById - no body params provided");
+		}
+
+		const data = req.body;
+
+		const userAuth = await getUserAuth({ userId });
+		const userRole = userAuth.role;
+
+		await editUserProfile({ userId, userRole, data });
+
+		const returnData = {
+			message: "Successfully updated user",
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(`users.EditUserById - Error editing user ${err.message}`);
 	}
 };
 
