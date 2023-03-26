@@ -6,6 +6,7 @@ import {
 	EditUser,
 	EditUserProfileImage,
 	GetCarrierByRegion,
+	GetDriversByCompany,
 } from "./controller";
 import { Authorize } from "../auth/controller";
 
@@ -22,3 +23,4 @@ UserRouter.post(
 	EditUserProfileImage
 );
 UserRouter.get("/getCarrierByRegion", Authorize, GetCarrierByRegion);
+UserRouter.get("/getDriversByCompany", Authorize, GetDriversByCompany);

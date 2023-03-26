@@ -127,9 +127,16 @@ export const OnboardDriver = async (req: Request, res: Response) => {
 			driverPassword,
 			driverPhone,
 			driverUsername,
+			companyName,
 		} = body;
 
-		if (!body || !driverUsername || !driverPassword || !driverPhone) {
+		if (
+			!body ||
+			!driverUsername ||
+			!driverPassword ||
+			!driverPhone ||
+			!companyName
+		) {
 			return res
 				.status(400)
 				.send("AuthController:OnboardDriver - Missing required driver data");
@@ -137,17 +144,19 @@ export const OnboardDriver = async (req: Request, res: Response) => {
 
 		const authDriver = await createAuthDriver({
 			driverPassword,
-			driverPhone,
 			driverUsername,
+			driverEmail,
 		});
 
-		// TODO:
-		// create new column on auth/user for driver or make new table
-		// store what users company is
-		// store the users address in its own column?
-
-		// makes sense to seperate out tables for carriers and shippers
-		// make a table for companies as well as a group
+		const driverProfile = await createUserProfile({
+			id: authDriver.id,
+			company: companyName,
+			address: driverAddress,
+			phoneNumber: driverPhone,
+			emergencyPhone: driverEmergencyPhone,
+			firstName: driverFirstName,
+			lastName: driverLastName,
+		});
 
 		const response = {
 			message: "Successfully created user",

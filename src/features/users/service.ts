@@ -8,20 +8,40 @@ import type { FileType } from "../files/type";
 export const createUserProfile = async ({
 	id,
 	company,
+	address,
+	phoneNumber,
+	emergencyPhone,
+	firstName,
+	lastName,
 }: {
 	id: number;
 	company: string;
+	address?: string;
+	phoneNumber?: string;
+	emergencyPhone?: string;
+	firstName?: string;
+	lastName?: string;
 }) => {
 	try {
 		const data = await Db.insertInto("users")
 			.values({
 				id,
 				company_name: company,
+				address,
+				phone_number: phoneNumber,
+				emergency_numbers: [emergencyPhone],
+				first_name: firstName,
+				last_name: lastName,
 			})
 			.executeTakeFirstOrThrow();
 
 		const userProfile = {
 			company,
+			address,
+			phoneNumber,
+			emergencyNumbers: [emergencyPhone],
+			firstName,
+			lastName,
 		};
 
 		return userProfile;
@@ -35,6 +55,8 @@ export const createUserProfile = async ({
 export const getUserProfile = async ({ userId }: { userId: string }) => {
 	try {
 		const numericId = parseInt(userId, 10);
+
+		// I should not be doing this
 
 		const data = await Db.selectFrom("users")
 			.selectAll()
@@ -263,6 +285,37 @@ export const getCarriersByRegion = async ({
 		});
 
 		return carrierProfiles;
+	} catch (err) {
+		throw new Error(
+			`users.service: getCarriersByRegion - Error gettings carriers ${err.message}`
+		);
+	}
+};
+
+export const getDriversByCarrierCompanyName = async ({
+	carrierCompanyName,
+}: {
+	carrierCompanyName: string;
+}) => {
+	try {
+		const result = await Db.selectFrom("users")
+			.innerJoin("auth", "auth.id", "users.id")
+			.selectAll(["auth", "users"])
+			.where("company_name", "=", carrierCompanyName)
+			.where("auth.role", "=", "Driver")
+			.execute();
+
+		const drivers = result.map((driver) => {
+			return {
+				id: driver.id,
+				username: driver.username,
+				status: driver.status,
+				firstName: driver.first_name,
+				lastName: driver.last_name,
+			};
+		});
+
+		return drivers;
 	} catch (err) {
 		throw new Error(
 			`users.service: getCarriersByRegion - Error gettings carriers ${err.message}`

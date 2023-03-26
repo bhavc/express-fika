@@ -144,13 +144,8 @@ export const createAuthDriver = async ({
 	driverPassword,
 	driverUsername,
 }: {
-	driverAddress?: string;
 	driverEmail?: string;
-	driverEmergencyPhone?: string;
-	driverFirstName?: string;
-	driverLastName?: string;
 	driverPassword: string;
-	driverPhone: string;
 	driverUsername: string;
 }) => {
 	try {
@@ -161,7 +156,7 @@ export const createAuthDriver = async ({
 
 		if (previousUsernameResult && previousUsernameResult.length > 0) {
 			throw new Error(
-				`auth.service:createAuthUser - a user is already registered with this email`
+				`auth.service:createAuthDriver - a user is already registered with this email`
 			);
 		}
 
@@ -194,7 +189,7 @@ export const createAuthDriver = async ({
 		return user;
 	} catch (err) {
 		throw new Error(
-			`auth.service:createAuthUser - Error registering user ${err.message}`
+			`auth.service:createAuthDriver - Error registering user ${err.message}`
 		);
 	}
 };

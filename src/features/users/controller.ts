@@ -4,6 +4,7 @@ import {
 	editUserProfile,
 	editUserProfileImage,
 	getCarriersByRegion,
+	getDriversByCarrierCompanyName,
 } from "./service";
 import { getUserAuth } from "../auth/service";
 import { generateSignedUrl, uploadFiles } from "../files/service";
@@ -116,6 +117,39 @@ export const EditUserProfileImage = async (req: Request, res: Response) => {
 			.status(500)
 			.send(
 				`user.EditUserProfileImage - Error getting workflow ${err.message}`
+			);
+	}
+};
+
+export const GetDriversByCompany = async (req: Request, res: Response) => {
+	try {
+		const userId = req.userId;
+		if (!userId) {
+			return res
+				.status(500)
+				.send("user.getDriversByCompany - no userId provided");
+		}
+
+		const carrierProfile = await getUserProfile({ userId });
+		const carrierCompanyName = carrierProfile.companyName;
+
+		// get the users profile, grab company name
+		// get all profiles and auth for drivers matching users company
+		const drivers = await getDriversByCarrierCompanyName({
+			carrierCompanyName,
+		});
+
+		const returnData = {
+			data: drivers,
+			message: "Success",
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`user.GetCarrierByRegion - Error getting carriers by geographic region ${err.message}`
 			);
 	}
 };
