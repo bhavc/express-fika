@@ -103,7 +103,7 @@ const editUserDriverProfile = async ({
 
 		const driverDataDb: { [key: string]: any } = {};
 
-		if (driverCompanyName) {
+		if (driverCompanyName || driverCompanyName === "") {
 			driverDataDb.company_name = driverCompanyName;
 		}
 
