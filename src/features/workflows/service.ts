@@ -177,6 +177,51 @@ export const getWorkflowsByCarrierId = async ({
 	}
 };
 
+// TODO make sure i filter out certain this that a driver does not need to
+// see, such as price
+export const getWorkflowsByDriverId = async ({
+	driverId,
+}: {
+	driverId: string;
+}) => {
+	try {
+		const driverIdIdAsNumber = parseInt(driverId, 10);
+		console.log("driverIdIdAsNumber", driverIdIdAsNumber);
+
+		const result = await Db.selectFrom("workflow")
+			.leftJoin("users as driver", "driver.id", "workflow.assigned_driver")
+			.selectAll("workflow")
+			.where("workflow.assigned_driver", "=", driverIdIdAsNumber)
+			.execute();
+
+		if (!result) {
+			throw new Error(
+				`workflow.service: getWorkflowsByCarrierId - Error getting workflow`
+			);
+		}
+
+		const workflows = result.map((workflow) => {
+			return {
+				id: workflow.id,
+				userId: workflow.user_for,
+				status: workflow.status,
+				workflowAddressData: workflow.workflow_address_data,
+				workflowContainerData: workflow.workflow_container_data,
+				shipperNotes: workflow.shipper_notes,
+				carrierNotes: workflow.carrier_notes,
+				fileUrls: workflow.file_urls,
+				createdAt: workflow.created_at,
+			};
+		});
+
+		return workflows;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: getWorkflowsByCarrierId - Error getting workflow ${err.message}`
+		);
+	}
+};
+
 export const createWorkflow = async ({
 	userId,
 	workflowAddressData,

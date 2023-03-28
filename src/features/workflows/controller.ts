@@ -3,6 +3,7 @@ import {
 	getWorkflowById,
 	getWorkflowsByUserId,
 	getWorkflowsByCarrierId,
+	getWorkflowsByDriverId,
 	createWorkflow,
 	editWorkflow,
 } from "./service";
@@ -84,6 +85,32 @@ export const GetWorkflowsCarrierFor = async (req: Request, res: Response) => {
 
 		const returnData = {
 			workflows,
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`workflows.GetWorkflowsCarrierFor - Error getting workflow ${err.message}`
+			);
+	}
+};
+
+export const GetWorkflowsDriverFor = async (req: Request, res: Response) => {
+	try {
+		const driverId = req.userId;
+		if (!driverId) {
+			return res
+				.status(400)
+				.send(`workflows.GetWorkflowsCarrierFor - Missing params`);
+		}
+
+		const workflows = await getWorkflowsByDriverId({ driverId });
+
+		const returnData = {
+			message: "Successfully retrieved workflows",
+			data: workflows,
 		};
 
 		return res.status(200).json(returnData);

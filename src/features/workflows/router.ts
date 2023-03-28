@@ -3,6 +3,7 @@ import {
 	GetWorkflow,
 	GetWorkflowsUserFor,
 	GetWorkflowsCarrierFor,
+	GetWorkflowsDriverFor,
 	CreateWorkflow,
 	EditWorkflow,
 	DeleteWorkflow,
@@ -13,6 +14,7 @@ export const WorkflowRouter = express.Router();
 
 WorkflowRouter.get("/", Authorize, GetWorkflowsUserFor);
 WorkflowRouter.get("/carrierFor", Authorize, GetWorkflowsCarrierFor);
+WorkflowRouter.get("/driverFor", Authorize, GetWorkflowsDriverFor);
 WorkflowRouter.get("/:id", Authorize, GetWorkflow);
 WorkflowRouter.post("/", Authorize, CreateWorkflow);
 WorkflowRouter.patch("/:id", Authorize, EditWorkflow);
