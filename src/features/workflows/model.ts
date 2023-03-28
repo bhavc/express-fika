@@ -6,6 +6,7 @@ export interface WorkflowTable {
 	user_for: number;
 	status: WorkflowStatus;
 	selected_carrier: number;
+	assigned_driver: number;
 	workflow_address_data: Record<string, any>;
 	workflow_container_data: Record<string, any>;
 	shipper_notes: string;

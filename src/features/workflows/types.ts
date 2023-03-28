@@ -63,10 +63,13 @@ export type WorkflowType = {
 	id: string;
 	user_for: string;
 	status: WorkflowStatus;
+	selectedCarrier?: number;
+	assignedDriver?: number;
 	workflowAddressData: WorkflowAddressDataType;
 	workflowContainerData: WorkflowContainerDataType;
 	workflowNotes: WorkflowNotesDataType;
 	carrierNotes: string;
+	shipperNotes: string;
 	uploadedFiles: FileType[];
 	fileUrls: FileType[];
 	createdAt: string;

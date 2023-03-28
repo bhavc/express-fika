@@ -19,8 +19,7 @@ import type { EditPaymentType } from "../payment/types";
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
-
-		const workflowId = req.params.workflowId;
+		const workflowId = req.params.id;
 
 		if (!userId || !workflowId) {
 			return res.status(400).send(`workflows.GetWorkflow - Missing params`);

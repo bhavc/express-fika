@@ -18,10 +18,24 @@ export const getWorkflowById = async ({
 
 		const result = await Db.selectFrom("workflow")
 			.innerJoin("users", "users.id", "workflow.user_for")
+			.innerJoin(
+				"users as driverUser",
+				"driverUser.id",
+				"workflow.assigned_driver"
+			)
+			.innerJoin(
+				"auth as driverAuth",
+				"driverAuth.id",
+				"workflow.assigned_driver"
+			)
 			.selectAll("workflow")
 			.select([
 				"users.id as carrier_id",
 				"users.company_name as carrier_company_name",
+				"driverUser.id as driver_id",
+				"driverUser.first_name as driverFirstName",
+				"driverUser.last_name as driverLastName",
+				"driverAuth.username as driverUserName",
 			])
 			.where("workflow.id", "=", workflowIdAsNumber)
 			.executeTakeFirstOrThrow();
@@ -39,6 +53,12 @@ export const getWorkflowById = async ({
 			selectedCarrier: {
 				id: result.carrier_id,
 				companyName: result.carrier_company_name,
+			},
+			assignedDriver: {
+				id: result.driver_id,
+				firstName: result.driverFirstName,
+				lastName: result.driverLastName,
+				username: result.driverUserName,
 			},
 			workflowAddressData: result.workflow_address_data,
 			workflowContainerData: result.workflow_container_data,
@@ -152,7 +172,7 @@ export const getWorkflowsByCarrierId = async ({
 		return workflows;
 	} catch (err) {
 		throw new Error(
-			`workflow.service: getWorkflowById - Error getting workflow ${err.message}`
+			`workflow.service: getWorkflowsByCarrierId - Error getting workflow ${err.message}`
 		);
 	}
 };
@@ -226,12 +246,16 @@ export const editWorkflow = async ({
 	try {
 		const numericId = parseInt(workflowId, 10);
 
-		const { status, carrierNotes } = workflowData;
+		const { status, assignedDriver, carrierNotes } = workflowData;
 
 		const workflowDataDb: { [key: string]: any } = {};
 
 		if (status) {
 			workflowDataDb.status = status;
+		}
+
+		if (assignedDriver) {
+			workflowDataDb.assigned_driver = assignedDriver;
 		}
 
 		if (carrierNotes) {
@@ -250,3 +274,54 @@ export const editWorkflow = async ({
 		);
 	}
 };
+
+// (async () => {
+// 	// const result = await Db.selectFrom("workflow")
+// 	// 		.innerJoin("users", "users.id", "workflow.user_for")
+// 	// 		.innerJoin(
+// 	// 			"users as driverUser",
+// 	// 			"driverUser.id",
+// 	// 			"workflow.assigned_driver"
+// 	// 		)
+// 	// 		.innerJoin(
+// 	// 			"auth as driverAuth",
+// 	// 			"driverAuth.id",
+// 	// 			"workflow.assigned_driver"
+// 	// 		)
+// 	// 		.selectAll("workflow")
+// 	// 		.select([
+// 	// 			"users.id as carrier_id",
+// 	// 			"users.company_name as carrier_company_name",
+// 	// 			"driverUser.id as driver_id",
+// 	// 			"driverUser.first_name as driverFirstName",
+// 	// 			"driverUser.last_name as driverLastName",
+// 	// 			"driverAuth.username as driverUserName",
+// 	// 		])
+// 	// 		.where("workflow.id", "=", workflowIdAsNumber)
+// 	// 		.executeTakeFirstOrThrow();
+
+// 	const result = await Db.selectFrom("workflow")
+// 		.leftJoin("users", "users.id", "workflow.user_for")
+// 		.leftJoin("users as userDriver", (join) =>
+// 			join
+// 				.onRef("userDriver.id", "=", "workflow.assigned_driver")
+// 				.onExists("workflow.assigned_driver")
+// 		)
+// 		.selectAll("workflow")
+// 		.select([
+// 			"users.id as carrier_id",
+// 			"users.company_name as carrier_company_name",
+// 		])
+// 		.where("workflow.id", "=", 1)
+// 		.executeTakeFirstOrThrow();
+
+// 	// await db
+// 	// 	.selectFrom("person")
+// 	// 	.innerJoin("pet", (join) =>
+// 	// 		join.onRef("pet.owner_id", "=", "person.id").on("pet.name", "=", "Doggo")
+// 	// 	)
+// 	// 	.selectAll()
+// 	// 	.execute();
+
+// 	console.log("result", result);
+// })();
