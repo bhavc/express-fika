@@ -86,13 +86,13 @@ export const Register = async (req: Request, res: Response) => {
 export const Login = async (req: Request, res: Response) => {
 	try {
 		const { body } = req;
-		if (!body || !body.email || !body.password) {
+		if (!body || !body.emailUsername || !body.password) {
 			return res.status(400).send("AuthController:Login - Missing data");
 		}
 
-		const { email, password } = body;
+		const { emailUsername, password } = body;
 
-		const userAuth = await loginUser({ email, password });
+		const userAuth = await loginUser({ emailUsername, password });
 		const userProfile = await getUserProfile({ userId: `${userAuth.id}` });
 
 		const jwtToken = await jwtSign({ id: userAuth.id });

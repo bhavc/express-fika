@@ -32,23 +32,28 @@ export const jwtVerify = async (token: string) => {
 };
 
 export const loginUser = async ({
-	email,
+	emailUsername,
 	password,
 }: {
-	email: string;
+	emailUsername: string;
 	password: string;
 }) => {
 	try {
-		const data = await Db.selectFrom("auth")
+		const emailResult = await Db.selectFrom("auth")
 			.selectAll()
-			.where("email", "=", email)
-			.execute();
+			.where("email", "=", emailUsername)
+			.executeTakeFirst();
 
-		const user = data[0];
+		const userNameResult = await Db.selectFrom("auth")
+			.selectAll()
+			.where("username", "=", emailUsername)
+			.executeTakeFirst();
 
-		if (!user) {
+		if (!emailResult && !userNameResult) {
 			throw new Error("auth.service:loginUser - User does not exist.");
 		}
+
+		let user = emailResult ? emailResult : userNameResult;
 
 		const isSamePassword = await comparePassword(password, user.password);
 		if (!isSamePassword) {

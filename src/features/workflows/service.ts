@@ -16,55 +16,55 @@ export const getWorkflowById = async ({
 	try {
 		const workflowIdAsNumber = parseInt(workflowId, 10);
 
-		const result = await Db.selectFrom("workflow")
-			.innerJoin("users", "users.id", "workflow.user_for")
-			.innerJoin(
-				"users as driverUser",
-				"driverUser.id",
+		const workflowResult = await Db.selectFrom("workflow")
+			.leftJoin("users", "users.id", "workflow.user_for")
+			.leftJoin(
+				"users as userDriver",
+				"userDriver.id",
 				"workflow.assigned_driver"
 			)
-			.innerJoin(
-				"auth as driverAuth",
-				"driverAuth.id",
+			.leftJoin(
+				"auth as authDriver",
+				"authDriver.id",
 				"workflow.assigned_driver"
 			)
 			.selectAll("workflow")
 			.select([
 				"users.id as carrier_id",
 				"users.company_name as carrier_company_name",
-				"driverUser.id as driver_id",
-				"driverUser.first_name as driverFirstName",
-				"driverUser.last_name as driverLastName",
-				"driverAuth.username as driverUserName",
+				"userDriver.id as driverId",
+				"userDriver.first_name as driverFirstname",
+				"userDriver.last_name as driverLastname",
+				"authDriver.username as driverUsername",
 			])
 			.where("workflow.id", "=", workflowIdAsNumber)
 			.executeTakeFirstOrThrow();
 
-		if (!result) {
+		if (!workflowResult) {
 			throw new Error(
 				`workflow.service: getWorkflowById - Error getting workflow`
 			);
 		}
 
 		const workflow = {
-			id: result.id,
-			userId: result.user_for,
-			status: result.status,
+			id: workflowResult.id,
+			userId: workflowResult.user_for,
+			status: workflowResult.status,
 			selectedCarrier: {
-				id: result.carrier_id,
-				companyName: result.carrier_company_name,
+				id: workflowResult.carrier_id,
+				companyName: workflowResult.carrier_company_name,
 			},
 			assignedDriver: {
-				id: result.driver_id,
-				firstName: result.driverFirstName,
-				lastName: result.driverLastName,
-				username: result.driverUserName,
+				id: workflowResult.driverId,
+				firstName: workflowResult.driverFirstname,
+				lastName: workflowResult.driverLastname,
+				username: workflowResult.driverUsername,
 			},
-			workflowAddressData: result.workflow_address_data,
-			workflowContainerData: result.workflow_container_data,
-			shipperNotes: result.shipper_notes,
-			carrierNotes: result.carrier_notes,
-			fileUrls: result.file_urls,
+			workflowAddressData: workflowResult.workflow_address_data,
+			workflowContainerData: workflowResult.workflow_container_data,
+			shipperNotes: workflowResult.shipper_notes,
+			carrierNotes: workflowResult.carrier_notes,
+			fileUrls: workflowResult.file_urls,
 		};
 
 		return workflow;
@@ -274,54 +274,3 @@ export const editWorkflow = async ({
 		);
 	}
 };
-
-// (async () => {
-// 	// const result = await Db.selectFrom("workflow")
-// 	// 		.innerJoin("users", "users.id", "workflow.user_for")
-// 	// 		.innerJoin(
-// 	// 			"users as driverUser",
-// 	// 			"driverUser.id",
-// 	// 			"workflow.assigned_driver"
-// 	// 		)
-// 	// 		.innerJoin(
-// 	// 			"auth as driverAuth",
-// 	// 			"driverAuth.id",
-// 	// 			"workflow.assigned_driver"
-// 	// 		)
-// 	// 		.selectAll("workflow")
-// 	// 		.select([
-// 	// 			"users.id as carrier_id",
-// 	// 			"users.company_name as carrier_company_name",
-// 	// 			"driverUser.id as driver_id",
-// 	// 			"driverUser.first_name as driverFirstName",
-// 	// 			"driverUser.last_name as driverLastName",
-// 	// 			"driverAuth.username as driverUserName",
-// 	// 		])
-// 	// 		.where("workflow.id", "=", workflowIdAsNumber)
-// 	// 		.executeTakeFirstOrThrow();
-
-// 	const result = await Db.selectFrom("workflow")
-// 		.leftJoin("users", "users.id", "workflow.user_for")
-// 		.leftJoin("users as userDriver", (join) =>
-// 			join
-// 				.onRef("userDriver.id", "=", "workflow.assigned_driver")
-// 				.onExists("workflow.assigned_driver")
-// 		)
-// 		.selectAll("workflow")
-// 		.select([
-// 			"users.id as carrier_id",
-// 			"users.company_name as carrier_company_name",
-// 		])
-// 		.where("workflow.id", "=", 1)
-// 		.executeTakeFirstOrThrow();
-
-// 	// await db
-// 	// 	.selectFrom("person")
-// 	// 	.innerJoin("pet", (join) =>
-// 	// 		join.onRef("pet.owner_id", "=", "person.id").on("pet.name", "=", "Doggo")
-// 	// 	)
-// 	// 	.selectAll()
-// 	// 	.execute();
-
-// 	console.log("result", result);
-// })();
