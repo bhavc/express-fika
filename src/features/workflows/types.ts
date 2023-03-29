@@ -5,7 +5,7 @@ export type WorkflowStatus =
 	| "Triage"
 	| "Allocated"
 	| "In Progress"
-	| "Shipped"
+	| "Delivered"
 	| "Rejected"
 	| "Cancelled"
 	| "Deleted";
@@ -70,6 +70,7 @@ export type WorkflowType = {
 	workflowNotes: WorkflowNotesDataType;
 	carrierNotes: string;
 	shipperNotes: string;
+	driverNotes: string;
 	uploadedFiles: FileType[];
 	fileUrls: FileType[];
 	createdAt: string;

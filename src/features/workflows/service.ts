@@ -186,7 +186,6 @@ export const getWorkflowsByDriverId = async ({
 }) => {
 	try {
 		const driverIdIdAsNumber = parseInt(driverId, 10);
-		console.log("driverIdIdAsNumber", driverIdIdAsNumber);
 
 		const result = await Db.selectFrom("workflow")
 			.leftJoin("users as driver", "driver.id", "workflow.assigned_driver")
@@ -291,7 +290,8 @@ export const editWorkflow = async ({
 	try {
 		const numericId = parseInt(workflowId, 10);
 
-		const { status, assignedDriver, carrierNotes } = workflowData;
+		const { status, assignedDriver, carrierNotes, uploadedFiles, driverNotes } =
+			workflowData;
 
 		const workflowDataDb: { [key: string]: any } = {};
 
@@ -306,6 +306,25 @@ export const editWorkflow = async ({
 		if (carrierNotes) {
 			workflowDataDb.carrier_notes = carrierNotes;
 		}
+
+		// TODO uncomment this
+		// if (driverNotes) {
+		// 	workflowDataDb.driver_notes = driverNotes;
+		// }
+
+		if (uploadedFiles) {
+			const mappedUploadedFiles = uploadedFiles.map((file) => {
+				return JSON.stringify({
+					name: file.name,
+					type: file.type,
+					blobName: file.blobName,
+				});
+			});
+
+			workflowDataDb.file_urls = mappedUploadedFiles;
+		}
+
+		// TODO handle uploaded files
 
 		const result = await Db.updateTable("workflow")
 			.set(workflowDataDb)

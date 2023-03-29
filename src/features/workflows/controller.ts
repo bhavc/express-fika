@@ -198,7 +198,9 @@ export const EditWorkflow = async (req: Request, res: Response) => {
 
 		await editWorkflow({ workflowId, workflowData });
 
-		await editPaymentByWorkflowId({ workflowId, editPaymentData });
+		if (editPaymentData) {
+			await editPaymentByWorkflowId({ workflowId, editPaymentData });
+		}
 
 		const returnData = {
 			message: "Successfully updated workflow",
