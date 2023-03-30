@@ -68,7 +68,7 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 			firstName: data.first_name,
 			lastName: data.last_name,
 			companyName: data.company_name,
-			companyAddress: data.address,
+			address: data.address,
 			phoneNumber: data.phone_number,
 			emergencyNumbers: data.emergency_numbers,
 			gender: data.gender,
@@ -99,12 +99,34 @@ const editUserDriverProfile = async ({
 	driverData: DriverType;
 }) => {
 	try {
-		const { driverCompanyName } = driverData;
+		const {
+			driverCompanyName,
+			driverAddress,
+			driverFirstName,
+			driverLastName,
+			driverPhoneNumber,
+		} = driverData;
 
 		const driverDataDb: { [key: string]: any } = {};
 
 		if (driverCompanyName || driverCompanyName === "") {
 			driverDataDb.company_name = driverCompanyName;
+		}
+
+		if (driverAddress) {
+			driverDataDb.address = driverAddress;
+		}
+
+		if (driverFirstName) {
+			driverDataDb.first_name = driverFirstName;
+		}
+
+		if (driverLastName) {
+			driverDataDb.last_name = driverLastName;
+		}
+
+		if (driverPhoneNumber) {
+			driverDataDb.phone_number = driverPhoneNumber;
 		}
 
 		const data = await Db.updateTable("users")
@@ -159,7 +181,6 @@ const editUserCarrierProfile = async ({
 			carrierDataDb.emergency_numbers = [clientCompanyEmergencyPhone];
 		}
 
-		// TODO: check this, might need to be converted to JSON
 		if (carrierInsuranceFiles) {
 			carrierDataDb.insurance_file_data = carrierInsuranceFiles.map((file) => {
 				return {

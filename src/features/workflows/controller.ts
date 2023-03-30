@@ -123,6 +123,35 @@ export const GetWorkflowsDriverFor = async (req: Request, res: Response) => {
 	}
 };
 
+export const GetWorkflowsDriverForLatest = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const driverId = req.userId;
+		if (!driverId) {
+			return res
+				.status(400)
+				.send(`workflows.GetWorkflowsCarrierFor - Missing params`);
+		}
+
+		const workflow = await getWorkflowsByDriverId({ driverId });
+
+		const returnData = {
+			message: "Successfully retrieved workflows",
+			data: workflow,
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`workflows.GetWorkflowsCarrierFor - Error getting workflow ${err.message}`
+			);
+	}
+};
+
 // too add generics here
 // interface APIResponse<Data> {
 // 	data: Data;

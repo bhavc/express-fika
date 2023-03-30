@@ -177,7 +177,7 @@ export const getWorkflowsByCarrierId = async ({
 	}
 };
 
-// TODO make sure i filter out certain this that a driver does not need to
+// TODO make sure i filter out certain things that a driver does not need to
 // see, such as price
 export const getWorkflowsByDriverId = async ({
 	driverId,
@@ -191,29 +191,25 @@ export const getWorkflowsByDriverId = async ({
 			.leftJoin("users as driver", "driver.id", "workflow.assigned_driver")
 			.selectAll("workflow")
 			.where("workflow.assigned_driver", "=", driverIdIdAsNumber)
-			.execute();
+			.executeTakeFirst();
 
 		if (!result) {
-			throw new Error(
-				`workflow.service: getWorkflowsByCarrierId - Error getting workflow`
-			);
+			return {};
 		}
 
-		const workflows = result.map((workflow) => {
-			return {
-				id: workflow.id,
-				userId: workflow.user_for,
-				status: workflow.status,
-				workflowAddressData: workflow.workflow_address_data,
-				workflowContainerData: workflow.workflow_container_data,
-				shipperNotes: workflow.shipper_notes,
-				carrierNotes: workflow.carrier_notes,
-				fileUrls: workflow.file_urls,
-				createdAt: workflow.created_at,
-			};
-		});
+		const workflow = {
+			id: result.id,
+			userId: result.user_for,
+			status: result.status,
+			workflowAddressData: result.workflow_address_data,
+			workflowContainerData: result.workflow_container_data,
+			shipperNotes: result.shipper_notes,
+			carrierNotes: result.carrier_notes,
+			fileUrls: result.file_urls,
+			createdAt: result.created_at,
+		};
 
-		return workflows;
+		return workflow;
 	} catch (err) {
 		throw new Error(
 			`workflow.service: getWorkflowsByCarrierId - Error getting workflow ${err.message}`
@@ -307,7 +303,7 @@ export const editWorkflow = async ({
 			workflowDataDb.carrier_notes = carrierNotes;
 		}
 
-		// TODO uncomment this
+		// TODO add this field
 		// if (driverNotes) {
 		// 	workflowDataDb.driver_notes = driverNotes;
 		// }
@@ -323,8 +319,6 @@ export const editWorkflow = async ({
 
 			workflowDataDb.file_urls = mappedUploadedFiles;
 		}
-
-		// TODO handle uploaded files
 
 		const result = await Db.updateTable("workflow")
 			.set(workflowDataDb)

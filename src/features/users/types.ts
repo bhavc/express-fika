@@ -9,7 +9,7 @@ export type UserProfile = {
 	firstName?: string;
 	lastName?: string;
 	companyName?: string; // this should maybe be a table
-	companyAddress?: string;
+	address?: string;
 	phoneNumber?: string;
 	emergencyNumbers?: string[];
 	gender?: string;
@@ -42,4 +42,8 @@ export type CarrierProfileType = {
 
 export type DriverType = {
 	driverCompanyName?: string;
+	driverAddress?: string;
+	driverFirstName?: string;
+	driverLastName?: string;
+	driverPhoneNumber?: string;
 };

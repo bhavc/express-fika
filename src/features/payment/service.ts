@@ -2,10 +2,7 @@ import { Db } from "../../core/database";
 
 import { PaymentType, EditPaymentType } from "./types";
 
-// TODO we will update the price as users go back and forth
-
 // step 1, user will always create a workflow with useCustomPrice and the customPrice.
-
 // when editing the workflow, you can edit whenever parties agree
 // if custom price then save,
 // if not save the shippers quote.

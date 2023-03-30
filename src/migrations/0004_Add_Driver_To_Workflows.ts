@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-// TODO: move into its own migration during production
+// TODO: move into workflow migration during production
 export async function up(db: Kysely<any>): Promise<void> {
 	await db.schema
 		.alterTable("workflow")

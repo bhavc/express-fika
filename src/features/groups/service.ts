@@ -4,7 +4,6 @@ export const getGeographicRegionByCountry = async ({
 	carrierCountry: string;
 }) => {
 	try {
-		// TODO maybe move to an external service
 		const northAmericanCountries = ["Canada"];
 
 		if (northAmericanCountries.includes(carrierCountry)) {
