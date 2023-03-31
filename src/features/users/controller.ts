@@ -232,7 +232,7 @@ export const GetDriversByCompany = async (req: Request, res: Response) => {
 		return res
 			.status(500)
 			.send(
-				`user.GetCarrierByRegion - Error getting carriers by geographic region ${err.message}`
+				`user.GetDriversByCompany - Error getting carriers by geographic region ${err.message}`
 			);
 	}
 };

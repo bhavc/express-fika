@@ -320,6 +320,7 @@ export const getCarriersByRegion = async ({
 		}
 
 		const result = await Db.selectFrom("users")
+			.leftJoin("auth", "auth.id", "users.id")
 			.selectAll()
 			.where(query)
 			.execute();
