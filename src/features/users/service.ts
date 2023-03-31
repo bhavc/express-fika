@@ -1,7 +1,7 @@
 import { Db, toJson } from "../../core/database";
 import { sql } from "kysely";
 
-import type { Role } from "../auth/types";
+import type { AuthStatus, Role } from "../auth/types";
 import type { CarrierProfileType, DriverType, UserProfile } from "./types";
 import type { FileType } from "../files/type";
 
@@ -352,16 +352,20 @@ export const getCarriersByRegion = async ({
 
 export const getDriversByCarrierCompanyName = async ({
 	carrierCompanyName,
+	driverStatuses,
 }: {
 	carrierCompanyName: string;
+	driverStatuses?: AuthStatus[];
 }) => {
 	try {
 		const result = await Db.selectFrom("users")
 			.innerJoin("auth", "auth.id", "users.id")
 			.selectAll(["auth", "users"])
-			.where("company_name", "=", carrierCompanyName)
+			.where("company_name", "=", "fika carrier")
 			.where("auth.role", "=", "Driver")
-			.where("auth.status", "=", "Activated")
+			.$if(driverStatuses && driverStatuses.length > 0, (qb) => {
+				return qb.where("auth.status", "in", ["Activated"]);
+			})
 			.execute();
 
 		const drivers = result.map((driver) => {

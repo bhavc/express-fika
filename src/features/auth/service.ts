@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { Db } from "../../core/database";
-import { Role, Status } from "./types";
+import { Role, AuthStatus } from "./types";
 
 const hashPassword = async (password: string) => {
 	return await bcrypt.hash(password, 10);
@@ -90,7 +90,7 @@ export const createAuthUser = async ({
 		}
 
 		// TODO we will put all users that are not admins into pending
-		const registerStatus: Status = ["Carrier", "Driver"].includes(role)
+		const registerStatus: AuthStatus = ["Carrier", "Driver"].includes(role)
 			? "Pending"
 			: "Activated";
 
@@ -166,7 +166,7 @@ export const createAuthDriver = async ({
 		}
 
 		// TODO we will put all users that are not admins into pending
-		const driverStatus: Status = "Pending";
+		const driverStatus: AuthStatus = "Pending";
 		const driverRole: Role = "Driver";
 
 		const hashedPassword = await hashPassword(driverPassword);

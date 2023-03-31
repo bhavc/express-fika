@@ -9,7 +9,9 @@ import {
 import { getUserAuth } from "../auth/service";
 import { generateSignedUrl, uploadFiles } from "../files/service";
 import { getGeographicRegionByCountry } from "../groups/service";
-import { FileType } from "../files/type";
+
+import type { AuthStatus } from "../auth/types";
+import type { FileType } from "../files/type";
 
 export const GetCurrentUser = async (req: Request, res: Response) => {
 	try {
@@ -202,6 +204,8 @@ export const EditUserProfileImage = async (req: Request, res: Response) => {
 export const GetDriversByCompany = async (req: Request, res: Response) => {
 	try {
 		const userId = req.userId;
+		const statuses = req.query.status as AuthStatus[];
+
 		if (!userId) {
 			return res
 				.status(500)
@@ -215,6 +219,7 @@ export const GetDriversByCompany = async (req: Request, res: Response) => {
 		// get all profiles and auth for drivers matching users company
 		const drivers = await getDriversByCarrierCompanyName({
 			carrierCompanyName,
+			driverStatuses: statuses,
 		});
 
 		const returnData = {
