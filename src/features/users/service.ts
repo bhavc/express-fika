@@ -23,7 +23,7 @@ export const createUserProfile = async ({
 	lastName?: string;
 }) => {
 	try {
-		const data = await Db.insertInto("users")
+		await Db.insertInto("users")
 			.values({
 				id,
 				company_name: company,
@@ -55,8 +55,6 @@ export const createUserProfile = async ({
 export const getUserProfile = async ({ userId }: { userId: string }) => {
 	try {
 		const numericId = parseInt(userId, 10);
-
-		// I should not be doing this
 
 		const data = await Db.selectFrom("users")
 			.selectAll()
@@ -133,6 +131,7 @@ const editUserDriverProfile = async ({
 			.set(driverDataDb)
 			.where("id", "=", userId)
 			.executeTakeFirstOrThrow();
+
 		return data.numUpdatedRows;
 	} catch (err) {
 		throw new Error(
@@ -227,6 +226,7 @@ const editUserCarrierProfile = async ({
 			.set(carrierDataDb)
 			.where("id", "=", userId)
 			.executeTakeFirstOrThrow();
+
 		return data.numUpdatedRows;
 	} catch (err) {
 		throw new Error(
@@ -314,9 +314,9 @@ export const getCarriersByRegion = async ({
 	try {
 		let query;
 		if (isWithinCountry) {
-			query = sql`${geographicRegion} = ANY (areas_serviced)`;
+			query = sql`${geographicRegion} = ANY (areas_serviced) AND auth.status = 'Activated'`;
 		} else {
-			query = sql`${geographicRegion} = ANY (areas_serviced) AND 'crossBorder' = ANY (regions_serviced)`;
+			query = sql`${geographicRegion} = ANY (areas_serviced) AND 'crossBorder' = ANY (regions_serviced) AND auth.status = 'Activated'`;
 		}
 
 		const result = await Db.selectFrom("users")
@@ -361,6 +361,7 @@ export const getDriversByCarrierCompanyName = async ({
 			.selectAll(["auth", "users"])
 			.where("company_name", "=", carrierCompanyName)
 			.where("auth.role", "=", "Driver")
+			.where("auth.status", "=", "Activated")
 			.execute();
 
 		const drivers = result.map((driver) => {
