@@ -1,5 +1,5 @@
 import { Generated, ColumnType } from "kysely";
-import { Role, Status } from "./types";
+import { Role, AuthStatus } from "./types";
 
 export interface AuthTable {
 	id: Generated<number>;
@@ -7,7 +7,7 @@ export interface AuthTable {
 	username?: string;
 	password: string;
 	role: Role;
-	status: Status;
+	status: AuthStatus;
 	// groups: null;
 	// permissions: null;
 	// isActive: boolean;
