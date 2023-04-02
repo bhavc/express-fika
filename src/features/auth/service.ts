@@ -111,7 +111,7 @@ export const createAuthUser = async ({
 			email,
 			password: hashedPassword,
 			role,
-			status,
+			status: registerStatus,
 		};
 
 		return user;
