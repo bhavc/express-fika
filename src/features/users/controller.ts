@@ -261,6 +261,16 @@ export const GetCarrierByRegion = async (req: Request, res: Response) => {
 			isWithinCountry,
 		});
 
+		for (const carrierProfile of carrierProfiles) {
+			if (carrierProfile.avatarImageData) {
+				const signedFileUrl = await generateSignedUrl(
+					carrierProfile.avatarImageData.blobName
+				);
+
+				carrierProfile.avatarImageData.url = signedFileUrl;
+			}
+		}
+
 		const returnData = {
 			data: carrierProfiles,
 			message: "Success",
