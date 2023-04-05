@@ -362,7 +362,7 @@ export const getDriversByCarrierCompanyName = async ({
 		const result = await Db.selectFrom("users")
 			.innerJoin("auth", "auth.id", "users.id")
 			.selectAll(["auth", "users"])
-			.where("company_name", "=", "fika carrier")
+			.where("company_name", "=", carrierCompanyName)
 			.where("auth.role", "=", "Driver")
 			.$if(driverStatuses && driverStatuses.length > 0, (qb) => {
 				return qb.where("auth.status", "in", ["Activated"]);
@@ -376,13 +376,14 @@ export const getDriversByCarrierCompanyName = async ({
 				status: driver.status,
 				firstName: driver.first_name,
 				lastName: driver.last_name,
+				createdAt: driver.created_at,
 			};
 		});
 
 		return drivers;
 	} catch (err) {
 		throw new Error(
-			`users.service: getCarriersByRegion - Error gettings carriers ${err.message}`
+			`users.service: getDriversByCarrierCompanyName - Error gettings carriers ${err.message}`
 		);
 	}
 };
