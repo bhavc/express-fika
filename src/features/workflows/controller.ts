@@ -4,6 +4,7 @@ import {
 	getWorkflowsByUserId,
 	getWorkflowsByCarrierId,
 	getWorkflowsByDriverId,
+	getLatestWorkflowByDriverId,
 	createWorkflow,
 	editWorkflow,
 } from "./service";
@@ -135,7 +136,7 @@ export const GetWorkflowsDriverForLatest = async (
 				.send(`workflows.GetWorkflowsCarrierFor - Missing params`);
 		}
 
-		const workflow = await getWorkflowsByDriverId({ driverId });
+		const workflow = await getLatestWorkflowByDriverId({ driverId });
 
 		const returnData = {
 			message: "Successfully retrieved workflows",

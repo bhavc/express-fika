@@ -122,7 +122,7 @@ export const getWorkflowsByUserId = async ({
 		return workflows;
 	} catch (err) {
 		throw new Error(
-			`workflow.service: getWorkflowById - Error getting workflow ${err.message}`
+			`workflow.service: getWorkflowsByUserId - Error getting workflow ${err.message}`
 		);
 	}
 };
@@ -191,6 +191,42 @@ export const getWorkflowsByDriverId = async ({
 			.leftJoin("users as driver", "driver.id", "workflow.assigned_driver")
 			.selectAll("workflow")
 			.where("workflow.assigned_driver", "=", driverIdIdAsNumber)
+			.execute();
+
+		const workflows = result.map((workflow) => {
+			return {
+				id: workflow.id,
+				userId: workflow.user_for,
+				status: workflow.status,
+				workflowAddressData: workflow.workflow_address_data,
+				workflowContainerData: workflow.workflow_container_data,
+				shipperNotes: workflow.shipper_notes,
+				carrierNotes: workflow.carrier_notes,
+				fileUrls: workflow.file_urls,
+				createdAt: workflow.created_at,
+			};
+		});
+
+		return workflows;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: getWorkflowsByDriverId - Error getting workflow ${err.message}`
+		);
+	}
+};
+
+export const getLatestWorkflowByDriverId = async ({
+	driverId,
+}: {
+	driverId: string;
+}) => {
+	try {
+		const driverIdIdAsNumber = parseInt(driverId, 10);
+
+		const result = await Db.selectFrom("workflow")
+			.leftJoin("users as driver", "driver.id", "workflow.assigned_driver")
+			.selectAll("workflow")
+			.where("workflow.assigned_driver", "=", driverIdIdAsNumber)
 			.executeTakeFirst();
 
 		if (!result) {
@@ -212,7 +248,7 @@ export const getWorkflowsByDriverId = async ({
 		return workflow;
 	} catch (err) {
 		throw new Error(
-			`workflow.service: getWorkflowsByCarrierId - Error getting workflow ${err.message}`
+			`workflow.service: getLatestWorkflowByDriverId - Error getting workflow ${err.message}`
 		);
 	}
 };
