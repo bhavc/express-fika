@@ -53,7 +53,7 @@ export const loginUser = async ({
 			throw new Error("auth.service:loginUser - User does not exist.");
 		}
 
-		let user = emailResult ? emailResult : userNameResult;
+		const user = emailResult ? emailResult : userNameResult;
 
 		const isSamePassword = await comparePassword(password, user.password);
 		if (!isSamePassword) {

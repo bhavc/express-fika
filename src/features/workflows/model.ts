@@ -16,3 +16,11 @@ export interface WorkflowTable {
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;
 }
+
+export interface WorkflowStatusTable {
+	id: Generated<number>;
+	workflow_id: number;
+	status: string;
+	created_at: ColumnType<Date, string | undefined, never>;
+	modified_at: ColumnType<Date, string | undefined, never>;
+}

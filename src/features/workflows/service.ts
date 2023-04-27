@@ -253,6 +253,28 @@ export const getLatestWorkflowByDriverId = async ({
 	}
 };
 
+const updateWorkflowStatus = async ({
+	workflowId,
+	workflowStatus,
+}: {
+	workflowId: number;
+	workflowStatus: string;
+}) => {
+	try {
+		const result = await Db.insertInto("workflow_status")
+			.values({
+				workflow_id: workflowId,
+				status: workflowStatus,
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+	} catch (err) {
+		throw new Error(
+			`workflow.service: updateWorkflowStatus - Error creating workflow ${err.message}`
+		);
+	}
+};
+
 export const createWorkflow = async ({
 	userId,
 	workflowAddressData,

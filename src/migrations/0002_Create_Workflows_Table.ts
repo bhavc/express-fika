@@ -12,6 +12,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 			["id"],
 			(cb) => cb.onDelete("cascade")
 		)
+		// .addColumn("status", "integer", (col) => col.notNull())
+		// i want varchar here. 
 		.addColumn("status", "varchar", (col) => col.notNull())
 		.addColumn("selected_carrier", "integer", (col) => col.notNull())
 		.addForeignKeyConstraint(
@@ -27,6 +29,14 @@ export async function up(db: Kysely<any>): Promise<void> {
 		.addColumn("carrier_notes", "varchar")
 		.addColumn("driver_notes", "varchar")
 		.addColumn("file_urls", sql`jsonb[]`)
+		.addColumn("assigned_driver", "integer")
+		.addForeignKeyConstraint(
+			"assigned_driver_constraint",
+			["assigned_driver"],
+			"users",
+			["id"]
+			// (cb) => cb.onDelete("cascade")
+		)
 		.addColumn("created_at", "timestamp", (col) =>
 			col.defaultTo(sql`now()`).notNull()
 		)

@@ -23,7 +23,6 @@ const host = process.env.POSTGRES_HOST;
 const db = new Kysely<Database>({
 	dialect: new PostgresDialect({
 		pool: new Pool({
-			// connectionString: process.env.POSTGRES_CONNECTION_STRING,
 			user,
 			password,
 			database,
