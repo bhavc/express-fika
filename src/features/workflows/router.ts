@@ -5,6 +5,7 @@ import {
 	GetWorkflowsCarrierFor,
 	GetWorkflowsDriverFor,
 	GetWorkflowsDriverForLatest,
+	GetWorkflowStatusForWorkflow,
 	CreateWorkflow,
 	EditWorkflow,
 	DeleteWorkflow,
@@ -18,6 +19,7 @@ WorkflowRouter.get("/carrierFor", Authorize, GetWorkflowsCarrierFor);
 WorkflowRouter.get("/driverFor", Authorize, GetWorkflowsDriverFor);
 WorkflowRouter.get("/driverForLatest", Authorize, GetWorkflowsDriverForLatest);
 WorkflowRouter.get("/:id", Authorize, GetWorkflow);
+WorkflowRouter.get("/status/:id", Authorize, GetWorkflowStatusForWorkflow);
 WorkflowRouter.post("/", Authorize, CreateWorkflow);
 WorkflowRouter.patch("/:id", Authorize, EditWorkflow);
 WorkflowRouter.delete("/:id", Authorize, DeleteWorkflow);

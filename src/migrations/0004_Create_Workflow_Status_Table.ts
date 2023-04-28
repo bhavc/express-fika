@@ -2,7 +2,7 @@ import { Kysely, sql } from "kysely";
 
 export async function up(db: Kysely<any>): Promise<void> {
 	await db.schema
-		.createTable("workflow_statuses")
+		.createTable("workflow_status")
 		.addColumn("id", "serial", (col) => col.primaryKey())
 		.addColumn("workflow_id", "integer", (col) => col.notNull())
 		.addForeignKeyConstraint(
@@ -23,5 +23,5 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-	await db.schema.dropTable("workflow_statuses").execute();
+	await db.schema.dropTable("workflow_status").execute();
 }

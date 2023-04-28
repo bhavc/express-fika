@@ -1,4 +1,5 @@
 import { Db, toJson } from "../../core/database";
+const { max } = Db.fn;
 
 import type {
 	WorkflowAddressDataType,
@@ -253,6 +254,32 @@ export const getLatestWorkflowByDriverId = async ({
 	}
 };
 
+export const getWorkflowStatusForWorkflow = async ({
+	workflowId,
+}: {
+	workflowId: string;
+}) => {
+	try {
+		const parsedWorkflowId = parseInt(workflowId);
+
+		const result = await Db.selectFrom("workflow_status")
+			.select("status")
+			.distinct()
+			.select(max("created_at").as("max_created_at"))
+			.where("workflow_id", "=", parsedWorkflowId)
+			.groupBy("status")
+			.orderBy("max_created_at")
+			.orderBy("status")
+			.execute();
+
+		return result;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: getWorkflowStatusForWorkflow - Error creating workflow ${err.message}`
+		);
+	}
+};
+
 const updateWorkflowStatus = async ({
 	workflowId,
 	workflowStatus,
@@ -326,6 +353,11 @@ export const createWorkflow = async ({
 			fileUrls: result.file_urls,
 		};
 
+		await updateWorkflowStatus({
+			workflowId: workflow.id,
+			workflowStatus: result.status,
+		});
+
 		return workflow;
 	} catch (err) {
 		throw new Error(
@@ -383,6 +415,13 @@ export const editWorkflow = async ({
 			.where("id", "=", numericId)
 			.executeTakeFirstOrThrow();
 
+		if (status) {
+			await updateWorkflowStatus({
+				workflowId: numericId,
+				workflowStatus: status,
+			});
+		}
+
 		return result.numUpdatedRows;
 	} catch (err) {
 		throw new Error(
@@ -390,3 +429,17 @@ export const editWorkflow = async ({
 		);
 	}
 };
+
+// (async () => {
+// 	const res = await Db.selectFrom("workflow_status")
+// 		.select("status")
+// 		.distinct()
+// 		.select(max("created_at").as("max_created_at"))
+// 		.where("workflow_id", "=", 5)
+// 		.groupBy("status")
+// 		.orderBy("status")
+// 		.orderBy("max_created_at")
+// 		.execute();
+
+// 	console.log("res", res);
+// })();

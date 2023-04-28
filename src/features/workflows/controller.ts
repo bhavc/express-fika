@@ -4,6 +4,7 @@ import {
 	getWorkflowsByUserId,
 	getWorkflowsByCarrierId,
 	getWorkflowsByDriverId,
+	getWorkflowStatusForWorkflow,
 	getLatestWorkflowByDriverId,
 	createWorkflow,
 	editWorkflow,
@@ -149,6 +150,33 @@ export const GetWorkflowsDriverForLatest = async (
 			.status(500)
 			.send(
 				`workflows.GetWorkflowsCarrierFor - Error getting workflow ${err.message}`
+			);
+	}
+};
+
+export const GetWorkflowStatusForWorkflow = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const workflowId = req.params.id;
+		if (!workflowId) {
+			return res.status(400).send(`workflows.GetWorkflow - Missing params`);
+		}
+
+		const workflowStatus = await getWorkflowStatusForWorkflow({ workflowId });
+
+		const returnData = {
+			message: "success",
+			workflowStatus: workflowStatus,
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`workflows.GetWorkflowStatusForWorkflow - Error getting workflow status ${err.message}`
 			);
 	}
 };
