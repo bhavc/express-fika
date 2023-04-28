@@ -33,9 +33,6 @@ export const Db = new Kysely<Database>({
 	dialect: new PostgresDialect({
 		pool: createPool(),
 	}),
-	// log(event) {
-	// 	console.log("event", event);
-	// },
 });
 
 export const toJson = <T>(obj: T): RawBuilder<T> => {

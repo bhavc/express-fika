@@ -272,7 +272,24 @@ export const getWorkflowStatusForWorkflow = async ({
 			.orderBy("status")
 			.execute();
 
-		return result;
+		// const mappedWorkflowStatus = result.reduce((acc, cv) => {
+		// 	const status = cv.status;
+		// 	const createdAt = cv.max_created_at;
+
+		// 	return {
+		// 		...acc,
+		// 		[status]: createdAt,
+		// 	};
+		// }, {} as { [key: string]: Date });
+
+		const mappedWorkflowStatus = result.map((workflowStatus) => {
+			const status = workflowStatus.status;
+			const createdAt = workflowStatus.max_created_at;
+
+			return { status, createdAt };
+		});
+
+		return mappedWorkflowStatus;
 	} catch (err) {
 		throw new Error(
 			`workflow.service: getWorkflowStatusForWorkflow - Error creating workflow ${err.message}`
@@ -429,17 +446,3 @@ export const editWorkflow = async ({
 		);
 	}
 };
-
-// (async () => {
-// 	const res = await Db.selectFrom("workflow_status")
-// 		.select("status")
-// 		.distinct()
-// 		.select(max("created_at").as("max_created_at"))
-// 		.where("workflow_id", "=", 5)
-// 		.groupBy("status")
-// 		.orderBy("status")
-// 		.orderBy("max_created_at")
-// 		.execute();
-
-// 	console.log("res", res);
-// })();
