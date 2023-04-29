@@ -272,16 +272,6 @@ export const getWorkflowStatusForWorkflow = async ({
 			.orderBy("status")
 			.execute();
 
-		// const mappedWorkflowStatus = result.reduce((acc, cv) => {
-		// 	const status = cv.status;
-		// 	const createdAt = cv.max_created_at;
-
-		// 	return {
-		// 		...acc,
-		// 		[status]: createdAt,
-		// 	};
-		// }, {} as { [key: string]: Date });
-
 		const mappedWorkflowStatus = result.map((workflowStatus) => {
 			const status = workflowStatus.status;
 			const createdAt = workflowStatus.max_created_at;
@@ -297,6 +287,58 @@ export const getWorkflowStatusForWorkflow = async ({
 	}
 };
 
+export const getWorkflowNotesByWorkflowId = async ({
+	workflowId,
+	userFrom,
+	userTo,
+}: {
+	workflowId: number;
+	userFrom: number;
+	userTo: number;
+}) => {
+	try {
+		const result = await Db.selectFrom("workflow_notes")
+			.where("workflow_id", "=", workflowId)
+			.where("user_from", "=", userFrom)
+			.where("user_to", "=", userTo)
+			.execute();
+
+		return result;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: getWorkflowNotes - Error getting workflow notes ${err.message}`
+		);
+	}
+};
+
+const updateWorkflowNotes = async ({
+	workflowId,
+	userFrom,
+	userTo,
+	message,
+}: {
+	workflowId: number;
+	userFrom: number;
+	userTo: number;
+	message: string;
+}) => {
+	try {
+		await Db.insertInto("workflow_notes")
+			.values({
+				workflow_id: workflowId,
+				user_from: userFrom,
+				user_to: userTo,
+				message: message,
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+	} catch (err) {
+		throw new Error(
+			`workflow.service: updateWorkflowNotes - Error updating workflow notes ${err.message}`
+		);
+	}
+};
+
 const updateWorkflowStatus = async ({
 	workflowId,
 	workflowStatus,
@@ -305,7 +347,7 @@ const updateWorkflowStatus = async ({
 	workflowStatus: string;
 }) => {
 	try {
-		const result = await Db.insertInto("workflow_status")
+		await Db.insertInto("workflow_status")
 			.values({
 				workflow_id: workflowId,
 				status: workflowStatus,
@@ -373,6 +415,15 @@ export const createWorkflow = async ({
 		await updateWorkflowStatus({
 			workflowId: workflow.id,
 			workflowStatus: result.status,
+		});
+
+		// here we store only the shipper notes because thats
+		// all thats available on initial create
+		await updateWorkflowNotes({
+			workflowId: workflow.id,
+			userFrom: result.user_for,
+			userTo: result.selected_carrier,
+			message: result.shipper_notes,
 		});
 
 		return workflow;

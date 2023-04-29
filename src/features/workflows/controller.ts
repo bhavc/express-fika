@@ -6,6 +6,7 @@ import {
 	getWorkflowsByDriverId,
 	getWorkflowStatusForWorkflow,
 	getLatestWorkflowByDriverId,
+	getWorkflowNotesByWorkflowId,
 	createWorkflow,
 	editWorkflow,
 } from "./service";
@@ -169,6 +170,42 @@ export const GetWorkflowStatusForWorkflow = async (
 		const returnData = {
 			message: "success",
 			workflowStatus: workflowStatus,
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`workflows.GetWorkflowStatusForWorkflow - Error getting workflow status ${err.message}`
+			);
+	}
+};
+
+export const GetWorkflowNotesForWorkflow = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const userId = req.userId;
+		const workflowId = req.params.id;
+		const userTo = req.params.userTo;
+
+		console.log("userid", userId);
+		console.log("workflowId", workflowId);
+		console.log("user to", userTo);
+
+		if (!workflowId || !userTo) {
+			return res
+				.status(400)
+				.send(`workflows.GetWorkflowNotesForWorkflow - Missing params userTo`);
+		}
+
+		console.log("stfu for one sec");
+
+		const returnData = {
+			message: "success",
+			workflowStatus: {},
 		};
 
 		return res.status(200).json(returnData);

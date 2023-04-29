@@ -24,3 +24,13 @@ export interface WorkflowStatusTable {
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;
 }
+
+export interface WorkflowNotesTable {
+	id: Generated<number>;
+	workflow_id: number;
+	user_from: number;
+	user_to: number;
+	message: string;
+	created_at: ColumnType<Date, string | undefined, never>;
+	modified_at: ColumnType<Date, string | undefined, never>;
+}
