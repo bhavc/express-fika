@@ -191,21 +191,21 @@ export const GetWorkflowNotesForWorkflow = async (
 		const workflowId = req.params.id;
 		const userTo = req.params.userTo;
 
-		console.log("userid", userId);
-		console.log("workflowId", workflowId);
-		console.log("user to", userTo);
-
 		if (!workflowId || !userTo) {
 			return res
 				.status(400)
 				.send(`workflows.GetWorkflowNotesForWorkflow - Missing params userTo`);
 		}
 
-		console.log("stfu for one sec");
+		const workflowNotes = await getWorkflowNotesByWorkflowId({
+			workflowId,
+			userFrom: userId,
+			userTo,
+		});
 
 		const returnData = {
 			message: "success",
-			workflowStatus: {},
+			workflowNotes,
 		};
 
 		return res.status(200).json(returnData);

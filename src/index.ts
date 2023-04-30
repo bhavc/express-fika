@@ -5,6 +5,8 @@ import { Pool } from "pg";
 import bodyParser from "body-parser";
 import qs from "qs";
 
+import { morganMiddleware } from "./core/middleware";
+
 import { AuthRouter } from "./features/auth/router";
 import { FileRouter } from "./features/files/router";
 import { UserRouter } from "./features/users/router";
@@ -43,6 +45,7 @@ const port = process.env.PORT;
 	app.use(bodyParser.urlencoded({ extended: false }));
 
 	app.use(cors());
+	app.use(morganMiddleware);
 
 	app.get("/", (_, res) => {
 		res.send("Express + TypeScript Server");

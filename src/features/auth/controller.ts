@@ -15,7 +15,6 @@ export const Authorize = async (
 ) => {
 	try {
 		const authHeader = req.headers.authorization;
-
 		if (!authHeader) {
 			return res.status(401).send(`auth.controller:Authorize - Unauthorized`);
 		}
@@ -42,7 +41,6 @@ export const Authorize = async (
 
 		const userId = decodedToken.id;
 		req.userId = userId;
-
 		next();
 	} catch (err) {
 		return res

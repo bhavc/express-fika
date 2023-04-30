@@ -29,10 +29,15 @@ export const getWorkflowById = async ({
 				"authDriver.id",
 				"workflow.assigned_driver"
 			)
+			.leftJoin(
+				"users as userCarrier",
+				"userCarrier.id",
+				"workflow.selected_carrier"
+			)
 			.selectAll("workflow")
 			.select([
-				"users.id as carrier_id",
-				"users.company_name as carrier_company_name",
+				"userCarrier.id as carrier_id",
+				"userCarrier.company_name as carrier_company_name",
 				"userDriver.id as driverId",
 				"userDriver.first_name as driverFirstname",
 				"userDriver.last_name as driverLastname",
@@ -292,16 +297,19 @@ export const getWorkflowNotesByWorkflowId = async ({
 	userFrom,
 	userTo,
 }: {
-	workflowId: number;
-	userFrom: number;
-	userTo: number;
+	workflowId: string;
+	userFrom: string;
+	userTo: string;
 }) => {
 	try {
+		const workflowIdAsNumber = parseInt(workflowId, 10);
+		const userFromAsNumber = parseInt(userFrom, 10);
+		const userToAsNumber = parseInt(userTo, 10);
+
 		const result = await Db.selectFrom("workflow_notes")
-			.where("workflow_id", "=", workflowId)
-			.where("user_from", "=", userFrom)
-			.where("user_to", "=", userTo)
-			.execute();
+			.selectAll()
+			.where("workflow_id", "=", workflowIdAsNumber)
+			.executeTakeFirstOrThrow();
 
 		return result;
 	} catch (err) {
