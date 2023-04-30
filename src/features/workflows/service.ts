@@ -309,7 +309,9 @@ export const getWorkflowNotesByWorkflowId = async ({
 		const result = await Db.selectFrom("workflow_notes")
 			.selectAll()
 			.where("workflow_id", "=", workflowIdAsNumber)
-			.executeTakeFirstOrThrow();
+			.where("user_from", "=", userFromAsNumber)
+			.where("user_to", "=", userToAsNumber)
+			.execute();
 
 		return result;
 	} catch (err) {
