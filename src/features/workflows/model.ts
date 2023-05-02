@@ -12,6 +12,7 @@ export interface WorkflowTable {
 	shipper_notes: string;
 	carrier_notes: string;
 	driver_notes: string;
+	// TODO Rename this column Record<string, any>[];
 	file_urls: ColumnType<string[]>;
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;

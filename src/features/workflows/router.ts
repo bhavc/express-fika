@@ -8,6 +8,7 @@ import {
 	GetWorkflowStatusForWorkflow,
 	GetWorkflowNotesForWorkflow,
 	CreateWorkflow,
+	PostWorkflowNotesForWorkflow,
 	EditWorkflow,
 	DeleteWorkflow,
 } from "./controller";
@@ -27,6 +28,11 @@ WorkflowRouter.get(
 WorkflowRouter.get("/:id", Authorize, GetWorkflow);
 WorkflowRouter.get("/", Authorize, GetWorkflowsUserFor);
 
+WorkflowRouter.post(
+	"/:id/notes/:userTo",
+	Authorize,
+	PostWorkflowNotesForWorkflow
+);
 WorkflowRouter.post("/", Authorize, CreateWorkflow);
 
 WorkflowRouter.patch("/:id", Authorize, EditWorkflow);

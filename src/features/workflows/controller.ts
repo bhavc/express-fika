@@ -7,18 +7,20 @@ import {
 	getWorkflowStatusForWorkflow,
 	getLatestWorkflowByDriverId,
 	getWorkflowNotesByWorkflowId,
+	postWorkflowNotesByWorkflowId,
 	createWorkflow,
 	editWorkflow,
 } from "./service";
-
 import {
 	createPaymentByWorkflowId,
 	getPaymentByWorkflowId,
 	editPaymentByWorkflowId,
 } from "../payment/service";
+import { generateSignedUrl } from "../files/service";
 
 import type { WorkflowType } from "./types";
 import type { EditPaymentType } from "../payment/types";
+import { FileType } from "../files/type";
 
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
@@ -31,6 +33,17 @@ export const GetWorkflow = async (req: Request, res: Response) => {
 
 		const workflow = await getWorkflowById({ workflowId });
 		const payment = await getPaymentByWorkflowId({ workflowId });
+
+		const workflowFiles = workflow.fileUrls;
+		const workflowFilesUnknown = workflowFiles as unknown;
+		const workflowFilesAsFileType = workflowFilesUnknown as FileType[];
+
+		if (workflowFilesAsFileType && workflowFilesAsFileType.length > 0) {
+			for (const workflowFile of workflowFilesAsFileType) {
+				const signedFileUrl = await generateSignedUrl(workflowFile.blobName);
+				workflowFile.url = signedFileUrl;
+			}
+		}
 
 		const workflowToFe = {
 			...workflow,
@@ -214,6 +227,52 @@ export const GetWorkflowNotesForWorkflow = async (
 			.status(500)
 			.send(
 				`workflows.GetWorkflowStatusForWorkflow - Error getting workflow status ${err.message}`
+			);
+	}
+};
+
+export const PostWorkflowNotesForWorkflow = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const userId = req.userId;
+		const workflowId = req.params.id;
+		const userTo = req.params.userTo;
+
+		if (!workflowId || !userTo) {
+			return res
+				.status(400)
+				.send(`workflows.PostWorkflowNotesForWorkflow - Missing params userTo`);
+		}
+
+		const data = req.body;
+		const message = data.message;
+
+		await postWorkflowNotesByWorkflowId({
+			workflowId,
+			userFrom: userId,
+			userTo,
+			message,
+		});
+
+		const workflowNotes = await getWorkflowNotesByWorkflowId({
+			workflowId,
+			userFrom: userId,
+			userTo,
+		});
+
+		const returnData = {
+			message: "success",
+			workflowNotes,
+		};
+
+		return res.status(200).json(returnData);
+	} catch (err) {
+		return res
+			.status(500)
+			.send(
+				`workflows.PostWorkflowNotesForWorkflow - Error getting workflow status ${err.message}`
 			);
 	}
 };

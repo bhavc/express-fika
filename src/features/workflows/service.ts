@@ -321,6 +321,40 @@ export const getWorkflowNotesByWorkflowId = async ({
 	}
 };
 
+export const postWorkflowNotesByWorkflowId = async ({
+	workflowId,
+	userFrom,
+	userTo,
+	message,
+}: {
+	workflowId: string;
+	userFrom: string;
+	userTo: string;
+	message: string;
+}) => {
+	try {
+		const workflowIdAsNumber = parseInt(workflowId, 10);
+		const userFromAsNumber = parseInt(userFrom, 10);
+		const userToAsNumber = parseInt(userTo, 10);
+
+		const result = await Db.insertInto("workflow_notes")
+			.values({
+				workflow_id: workflowIdAsNumber,
+				user_from: userFromAsNumber,
+				user_to: userToAsNumber,
+				message,
+			})
+			.returningAll()
+			.executeTakeFirstOrThrow();
+
+		return result;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: postWorkflowNotesByWorkflowId - Error getting workflow notes ${err.message}`
+		);
+	}
+};
+
 const updateWorkflowNotes = async ({
 	workflowId,
 	userFrom,

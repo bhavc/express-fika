@@ -38,7 +38,3 @@ export const Db = new Kysely<Database>({
 export const toJson = <T>(obj: T): RawBuilder<T> => {
 	return sql`${JSON.stringify(obj)}`;
 };
-
-// export const toJson = <T>(object: T): RawBuilder<T> => {
-// 	return sql`cast (${JSON.stringify(object)} as jsonb)`;
-// };

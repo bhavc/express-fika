@@ -13,7 +13,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 			(cb) => cb.onDelete("cascade")
 		)
 		// .addColumn("status", "integer", (col) => col.notNull())
-		// i want varchar here. 
+		// i want varchar here.
 		.addColumn("status", "varchar", (col) => col.notNull())
 		.addColumn("selected_carrier", "integer", (col) => col.notNull())
 		.addForeignKeyConstraint(
