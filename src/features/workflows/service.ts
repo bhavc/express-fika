@@ -1,4 +1,5 @@
 import { Db, toJson } from "../../core/database";
+import { sql } from "kysely";
 const { max } = Db.fn;
 
 import type {
@@ -306,14 +307,13 @@ export const getWorkflowNotesByWorkflowId = async ({
 		const userFromAsNumber = parseInt(userFrom, 10);
 		const userToAsNumber = parseInt(userTo, 10);
 
-		const result = await Db.selectFrom("workflow_notes")
-			.selectAll()
-			.where("workflow_id", "=", workflowIdAsNumber)
-			.where("user_from", "=", userFromAsNumber)
-			.where("user_to", "=", userToAsNumber)
-			.execute();
+		const result =
+			await sql`SELECT * FROM workflow_notes WHERE workflow_id = ${workflowIdAsNumber}
+		AND (user_from = ${userFromAsNumber} AND user_to = ${userToAsNumber}) OR (user_from = ${userToAsNumber} AND user_to = ${userFromAsNumber})
+		ORDER BY created_at
+		  `.execute(Db);
 
-		return result;
+		return result.rows;
 	} catch (err) {
 		throw new Error(
 			`workflow.service: getWorkflowNotes - Error getting workflow notes ${err.message}`
