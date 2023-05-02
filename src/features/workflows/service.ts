@@ -541,3 +541,34 @@ export const editWorkflow = async ({
 		);
 	}
 };
+
+export const editWorkflowFiles = async ({
+	workflowId,
+	uploadedFiles,
+}: {
+	workflowId: string;
+	uploadedFiles: FileType[];
+}) => {
+	try {
+		const numericId = parseInt(workflowId, 10);
+
+		const mappedUploadedFiles = uploadedFiles.map((file) => {
+			return JSON.stringify({
+				name: file.name,
+				type: file.type,
+				blobName: file.blobName,
+			});
+		});
+
+		const result = await Db.updateTable("workflow")
+			.set({ file_urls: mappedUploadedFiles })
+			.where("id", "=", numericId)
+			.executeTakeFirstOrThrow();
+
+		return result.numUpdatedRows;
+	} catch (err) {
+		throw new Error(
+			`users.service: editWorkflow - Error editing user ${err.message}`
+		);
+	}
+};

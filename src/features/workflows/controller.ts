@@ -10,6 +10,7 @@ import {
 	postWorkflowNotesByWorkflowId,
 	createWorkflow,
 	editWorkflow,
+	editWorkflowFiles,
 } from "./service";
 import {
 	createPaymentByWorkflowId,
@@ -349,11 +350,18 @@ export const EditWorkflow = async (req: Request, res: Response) => {
 		const { body } = req;
 		const workflowData = body.workflow as WorkflowType;
 		const editPaymentData = body.payment as EditPaymentType;
+		const uploadedFiles = body.uploadedFiles as FileType[];
 
-		await editWorkflow({ workflowId, workflowData });
+		if (workflowData) {
+			await editWorkflow({ workflowId, workflowData });
+		}
 
 		if (editPaymentData) {
 			await editPaymentByWorkflowId({ workflowId, editPaymentData });
+		}
+
+		if (uploadedFiles && uploadedFiles.length > 0) {
+			await editWorkflowFiles({ workflowId, uploadedFiles });
 		}
 
 		const returnData = {
