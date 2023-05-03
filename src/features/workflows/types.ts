@@ -12,7 +12,7 @@ export type WorkflowStatus =
 
 export type WorkflowAddressDataType = {
 	containerNumber: string;
-	shipmentNumber?: string;
+	cargoReferenceNumber?: string;
 	pickupCompanyName: string;
 	pickupAddress: string;
 	pickupContactName: string;
