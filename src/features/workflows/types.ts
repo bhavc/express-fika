@@ -26,7 +26,7 @@ export type WorkflowAddressDataType = {
 	dropoffWindow?: string;
 	dropOffAppointmentNeeded?: boolean;
 	bolNumber?: string;
-	t1Number?: string;
+	customsReference?: string;
 	borderCrossing?: string;
 };
 
