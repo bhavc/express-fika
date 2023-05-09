@@ -13,6 +13,7 @@ export const createUserProfile = async ({
 	emergencyPhone,
 	firstName,
 	lastName,
+	driverFiles,
 }: {
 	id: number;
 	company: string;
@@ -21,18 +22,25 @@ export const createUserProfile = async ({
 	emergencyPhone?: string;
 	firstName?: string;
 	lastName?: string;
+	driverFiles?: any[];
 }) => {
 	try {
+		const createUserToDb: { [key: string]: any } = {
+			id,
+			company_name: company,
+			address,
+			phone_number: phoneNumber,
+			emergency_numbers: [emergencyPhone],
+			first_name: firstName,
+			last_name: lastName,
+		};
+
+		if (driverFiles && driverFiles.length > 0) {
+			createUserToDb.driverFiles = driverFiles;
+		}
+
 		await Db.insertInto("users")
-			.values({
-				id,
-				company_name: company,
-				address,
-				phone_number: phoneNumber,
-				emergency_numbers: [emergencyPhone],
-				first_name: firstName,
-				last_name: lastName,
-			})
+			.values(createUserToDb)
 			.executeTakeFirstOrThrow();
 
 		const userProfile = {

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import {
 	getWorkflowById,
 	getAllWorkflowsByUserId,
-	getWorkflowsByCarrierId,
+	getAllWorkflowsByCarrierId,
 	getWorkflowsByDriverId,
 	getWorkflowStatusForWorkflow,
 	getLatestWorkflowByDriverId,
@@ -12,6 +12,7 @@ import {
 	editWorkflow,
 	editWorkflowFiles,
 	getWorkflowsByStatusGroup,
+	getWorkflowsByStatusGroupCarrierId,
 } from "./service";
 import {
 	createPaymentByWorkflowId,
@@ -99,13 +100,24 @@ export const GetWorkflowsUserFor = async (req: Request, res: Response) => {
 export const GetWorkflowsCarrierFor = async (req: Request, res: Response) => {
 	try {
 		const carrierId = req.userId;
+		const query = req.query;
+		const statusGroup = query.statusGroup as string;
+
 		if (!carrierId) {
 			return res
 				.status(400)
 				.send(`workflows.GetWorkflowsCarrierFor - Missing params`);
 		}
 
-		const workflows = await getWorkflowsByCarrierId({ carrierId });
+		let workflows;
+		if (statusGroup) {
+			workflows = await getWorkflowsByStatusGroupCarrierId({
+				carrierId,
+				statusGroup,
+			});
+		} else {
+			workflows = await getAllWorkflowsByCarrierId({ carrierId });
+		}
 
 		const returnData = {
 			workflows,

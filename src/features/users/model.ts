@@ -18,6 +18,7 @@ export interface UserTable {
 	regions_serviced: RegionsServiced[];
 	avatar_image_data: Record<string, any>;
 	insurance_file_data: Record<string, any>[];
+	driver_file_data: Record<string, any>[];
 	bucket_storage_urls: Record<string, any>[];
 	created_at: ColumnType<Date, string | undefined, never>;
 	modified_at: ColumnType<Date, string | undefined, never>;

@@ -209,7 +209,7 @@ export const getWorkflowsByStatusGroup = async ({
 	}
 };
 
-export const getWorkflowsByCarrierId = async ({
+export const getAllWorkflowsByCarrierId = async ({
 	carrierId,
 }: {
 	carrierId: string;
@@ -229,7 +229,7 @@ export const getWorkflowsByCarrierId = async ({
 
 		if (!result) {
 			throw new Error(
-				`workflow.service: getWorkflowsByCarrierId - Error getting workflow`
+				`workflow.service: getAllWorkflowsByCarrierId - Error getting workflow`
 			);
 		}
 
@@ -254,7 +254,84 @@ export const getWorkflowsByCarrierId = async ({
 		return workflows;
 	} catch (err) {
 		throw new Error(
-			`workflow.service: getWorkflowsByCarrierId - Error getting workflow ${err.message}`
+			`workflow.service: getAllWorkflowsByCarrierId - Error getting workflow ${err.message}`
+		);
+	}
+};
+
+export const getWorkflowsByStatusGroupCarrierId = async ({
+	carrierId,
+	statusGroup,
+}: {
+	carrierId: string;
+	statusGroup: string;
+}) => {
+	try {
+		const carrierIdAsNumber = parseInt(carrierId, 10);
+		let result;
+
+		if (statusGroup === "active") {
+			result = await Db.selectFrom("workflow")
+				.leftJoin("users as carrier", "carrier.id", "workflow.user_for")
+				.selectAll("workflow")
+				.select([
+					"carrier.id as carrier_id",
+					"carrier.company_name as carrier_company_name",
+				])
+				.where("workflow.selected_carrier", "=", carrierIdAsNumber)
+				.where("status", "not in", [
+					"Rejected",
+					"Cancelled",
+					"Delivered",
+					"Deleted",
+				])
+				.execute();
+		} else {
+			result = await Db.selectFrom("workflow")
+				.leftJoin("users as carrier", "carrier.id", "workflow.user_for")
+				.selectAll("workflow")
+				.select([
+					"carrier.id as carrier_id",
+					"carrier.company_name as carrier_company_name",
+				])
+				.where("workflow.selected_carrier", "=", carrierIdAsNumber)
+				.where("status", "in", [
+					"Rejected",
+					"Cancelled",
+					"Delivered",
+					"Deleted",
+				])
+				.execute();
+		}
+
+		if (!result) {
+			throw new Error(
+				`workflow.service: getWorkflowsByStatusGroupCarrierId - Error getting workflow`
+			);
+		}
+
+		const workflows = result.map((workflow) => {
+			return {
+				id: workflow.id,
+				userId: workflow.user_for,
+				status: workflow.status,
+				selectedCarrier: {
+					id: workflow.carrier_id,
+					companyName: workflow.carrier_company_name,
+				},
+				workflowAddressData: workflow.workflow_address_data,
+				workflowContainerData: workflow.workflow_container_data,
+				shipperNotes: workflow.shipper_notes,
+				carrierNotes: workflow.carrier_notes,
+				fileUrls: workflow.file_urls,
+				createdAt: workflow.created_at,
+			};
+		});
+
+		return workflows;
+	} catch (err) {
+		throw new Error(
+			`workflow.service: getWorkflowsByStatusGroupCarrierId - Error getting workflow ${err.message}`
 		);
 	}
 };
@@ -574,6 +651,8 @@ export const editWorkflow = async ({
 
 		if (assignedDriver) {
 			workflowDataDb.assigned_driver = assignedDriver;
+		} else {
+			workflowDataDb.assigned_driver = null;
 		}
 
 		if (carrierNotes) {

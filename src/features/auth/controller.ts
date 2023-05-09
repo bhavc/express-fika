@@ -125,6 +125,7 @@ export const OnboardDriver = async (req: Request, res: Response) => {
 			driverPassword,
 			driverPhone,
 			driverUsername,
+			driverFiles,
 			companyName,
 		} = body;
 
@@ -146,7 +147,7 @@ export const OnboardDriver = async (req: Request, res: Response) => {
 			driverEmail,
 		});
 
-		const driverProfile = await createUserProfile({
+		await createUserProfile({
 			id: authDriver.id,
 			company: companyName,
 			address: driverAddress,
@@ -154,6 +155,7 @@ export const OnboardDriver = async (req: Request, res: Response) => {
 			emergencyPhone: driverEmergencyPhone,
 			firstName: driverFirstName,
 			lastName: driverLastName,
+			driverFiles,
 		});
 
 		const response = {
