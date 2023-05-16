@@ -36,7 +36,7 @@ export const createUserProfile = async ({
 		};
 
 		if (driverFiles && driverFiles.length > 0) {
-			createUserToDb.driverFiles = driverFiles;
+			createUserToDb.driver_file_data = driverFiles;
 		}
 
 		await Db.insertInto("users")
@@ -87,6 +87,7 @@ export const getUserProfile = async ({ userId }: { userId: string }) => {
 			avatarImageData: data.avatar_image_data,
 			insuranceFileData: data.insurance_file_data,
 			bucketStorageUrls: data.bucket_storage_urls,
+			driverFileData: data.driver_file_data,
 		};
 
 		return userProfile;

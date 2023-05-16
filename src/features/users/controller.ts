@@ -77,6 +77,14 @@ export const GetUserById = async (req: Request, res: Response) => {
 			userProfile.avatarImageData.url = signedFileUrl;
 		}
 
+		const userDriverData = userProfile.driverFileData;
+		if (userDriverData && userDriverData.length > 0) {
+			for (const driverFile of userDriverData) {
+				const signedFileUrl = await generateSignedUrl(driverFile.blobName);
+				driverFile.url = signedFileUrl;
+			}
+		}
+
 		const userInsuranceFileData = userProfile.insuranceFileData as FileType[];
 		if (userInsuranceFileData && userInsuranceFileData.length > 0) {
 			for (const insuranceFile of userInsuranceFileData) {

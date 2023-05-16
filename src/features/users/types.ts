@@ -22,6 +22,7 @@ export type UserProfile = {
 	avatarImageData?: { [key: string]: any };
 	insuranceFileData?: { [key: string]: any }[];
 	bucketStorageUrls?: { [key: string]: any };
+	driverFileData?: { [key: string]: any }[];
 	created_at?: string;
 	modified_at?: string;
 };

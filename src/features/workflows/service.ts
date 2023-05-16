@@ -418,7 +418,7 @@ export const getWorkflowStatusForWorkflow = async ({
 	workflowId: string;
 }) => {
 	try {
-		const parsedWorkflowId = parseInt(workflowId);
+		const parsedWorkflowId = parseInt(workflowId, 10);
 
 		const result = await Db.selectFrom("workflow_status")
 			.select("status")
@@ -524,7 +524,7 @@ const updateWorkflowNotes = async ({
 				workflow_id: workflowId,
 				user_from: userFrom,
 				user_to: userTo,
-				message: message,
+				message,
 			})
 			.returningAll()
 			.executeTakeFirstOrThrow();

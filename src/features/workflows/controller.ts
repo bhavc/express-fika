@@ -202,7 +202,7 @@ export const GetWorkflowStatusForWorkflow = async (
 
 		const returnData = {
 			message: "success",
-			workflowStatus: workflowStatus,
+			workflowStatus,
 		};
 
 		return res.status(200).json(returnData);
