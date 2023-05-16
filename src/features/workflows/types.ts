@@ -33,9 +33,10 @@ export type WorkflowAddressDataType = {
 export type WorkflowContainerDataType = {
 	goodsDescription: string;
 	cargoType: string; // TODO this is not showing the string
-	length: string;
-	width: string;
-	height: string;
+	containerLength: string;
+	containerWidth: string;
+	containerHeight: string;
+	containerTypeLabel: string;
 	sealNumber: string;
 	numberOfPackages: string;
 	grossWeight: string;
