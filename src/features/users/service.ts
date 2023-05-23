@@ -207,7 +207,6 @@ const editUserCarrierProfile = async ({
 			carrierDataDb.areas_serviced = clientAreasServiced;
 		}
 
-		// TODO fix this
 		if (clientLanguagesSupported) {
 			let formattedLanguagesSupported;
 			if (!Array.isArray(clientLanguagesSupported)) {
