@@ -23,7 +23,7 @@ import { generateSignedUrl } from "../files/service";
 
 import type { WorkflowType } from "./types";
 import type { EditPaymentType } from "../payment/types";
-import { FileType } from "../files/type";
+import type { FileType } from "../files/type";
 
 export const GetWorkflow = async (req: Request, res: Response) => {
 	try {
@@ -360,6 +360,7 @@ export const CreateWorkflow = async (req: Request, res: Response) => {
 export const EditWorkflow = async (req: Request, res: Response) => {
 	try {
 		const workflowId = req.params.id;
+
 		if (!workflowId) {
 			return res
 				.status(400)
