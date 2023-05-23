@@ -336,8 +336,6 @@ export const getWorkflowsByStatusGroupCarrierId = async ({
 	}
 };
 
-// TODO make sure i filter out certain things that a driver does not need to
-// see, such as price
 export const getWorkflowsByDriverId = async ({
 	driverId,
 }: {
@@ -658,11 +656,6 @@ export const editWorkflow = async ({
 		if (carrierNotes) {
 			workflowDataDb.carrier_notes = carrierNotes;
 		}
-
-		// TODO add this field
-		// if (driverNotes) {
-		// 	workflowDataDb.driver_notes = driverNotes;
-		// }
 
 		if (uploadedFiles) {
 			const mappedUploadedFiles = uploadedFiles.map((file) => {

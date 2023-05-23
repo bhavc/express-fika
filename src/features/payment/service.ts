@@ -70,7 +70,6 @@ export const getPaymentByWorkflowId = async ({
 
 		const payment = {
 			id: result.id,
-			// TODO rename to workflow_for
 			workflowId: result.workflow_id,
 			price: result.price,
 			acceptedByCarrier: result.accepted_by_carrier,
@@ -119,7 +118,6 @@ export const editPaymentByWorkflowId = async ({
 		} else if (editPaymentData.declineShipment) {
 			// if declien in shipment from shipper side,
 			// set price as null and no one accepted anything
-			// TODO: maybe add a declined date or remove alltogether
 			// all allow bidding for as much as possible
 			paymentDataDb.accepted_by_carrier = false;
 			paymentDataDb.accepted_by_shipper = false;

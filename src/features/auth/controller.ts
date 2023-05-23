@@ -147,7 +147,6 @@ export const OnboardDriver = async (req: Request, res: Response) => {
 			driverEmail,
 		});
 
-		// TODO: test driver files
 		await createUserProfile({
 			id: authDriver.id,
 			company: companyName,

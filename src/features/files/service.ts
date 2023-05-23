@@ -26,7 +26,6 @@ const uploadFileToCloudStorage = async (
 	}
 };
 
-// TODO: have to change this signed url to refetch on every request
 export const generateSignedUrl = async (blobName: string) => {
 	try {
 		const storage = new Storage({
@@ -52,7 +51,14 @@ export const generateSignedUrl = async (blobName: string) => {
 	}
 };
 
-// TODO validate file types here
+const AcceptedFileTypes = [
+	"image/png",
+	"application/pdf",
+	"image/jpeg",
+	"image/jpg",
+	"text/plain",
+];
+
 export const uploadFiles = async ({
 	files,
 }: {
@@ -61,6 +67,14 @@ export const uploadFiles = async ({
 	try {
 		const fileData = await Promise.all(
 			files.map(async (file) => {
+				const fileType = file.mimetype;
+				console.log("fileType", fileType);
+				if (!AcceptedFileTypes.includes(fileType)) {
+					throw new Error(
+						`files.service: uploadFiles - File is of incorrect type`
+					);
+				}
+
 				const blobName = generateFileHash(file.originalname);
 				await uploadFileToCloudStorage(blobName, file);
 				const signedUrl = await generateSignedUrl(blobName);

@@ -89,8 +89,12 @@ export const createAuthUser = async ({
 			);
 		}
 
-		// TODO we will put all users that are not admins into pending
-		const registerStatus: AuthStatus = ["Carrier", "Driver"].includes(role)
+		// TODO rethink this moving forward
+		const registerStatus: AuthStatus = [
+			"Carrier",
+			"Driver",
+			"Shipper",
+		].includes(role)
 			? "Pending"
 			: "Activated";
 
@@ -165,7 +169,7 @@ export const createAuthDriver = async ({
 			);
 		}
 
-		// TODO we will put all users that are not admins into pending
+		// TODO rethink this moving forward
 		const driverStatus: AuthStatus = "Pending";
 		const driverRole: Role = "Driver";
 
