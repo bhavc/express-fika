@@ -32,6 +32,7 @@ export const Authorize = async (
 			iat: number;
 		};
 
+		// TODO: log user out if their session is exired
 		const decodedToken = (await jwtVerify(bearerToken)) as DecodedTokenType;
 		if (!decodedToken) {
 			return res
