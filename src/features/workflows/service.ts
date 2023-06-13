@@ -555,6 +555,18 @@ const updateWorkflowStatus = async ({
 	}
 };
 
+const generateCargoReferenceNumber = (referenceNumberLength: number) => {
+	let result = "";
+	const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	const charactersLength = characters.length;
+	let counter = 0;
+	while (counter < referenceNumberLength) {
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		counter += 1;
+	}
+	return result;
+};
+
 export const createWorkflow = async ({
 	userId,
 	workflowAddressData,
@@ -572,6 +584,12 @@ export const createWorkflow = async ({
 }) => {
 	try {
 		const parsedUserId = parseInt(userId, 10);
+
+		// generate shipping number
+		if (!workflowAddressData.cargoReferenceNumber) {
+			const generatedCargoReferenceNumber = generateCargoReferenceNumber(8);
+			workflowAddressData.cargoReferenceNumber = generatedCargoReferenceNumber;
+		}
 
 		const jsonFiles = uploadedFiles.map((file) => {
 			return JSON.stringify({
