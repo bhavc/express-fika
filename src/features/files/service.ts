@@ -68,7 +68,6 @@ export const uploadFiles = async ({
 		const fileData = await Promise.all(
 			files.map(async (file) => {
 				const fileType = file.mimetype;
-				console.log("fileType", fileType);
 				if (!AcceptedFileTypes.includes(fileType)) {
 					throw new Error(
 						`files.service: uploadFiles - File is of incorrect type`

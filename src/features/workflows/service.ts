@@ -1,4 +1,5 @@
 import { Db, toJson } from "../../core/database";
+import { WorkflowTable } from "./model";
 import { sql } from "kysely";
 const { max } = Db.fn;
 
@@ -69,6 +70,7 @@ export const getWorkflowById = async ({
 			},
 			workflowAddressData: workflowResult.workflow_address_data,
 			workflowContainerData: workflowResult.workflow_container_data,
+			workflowAssignedVehicle: workflowResult.workflow_assigned_vehicle,
 			shipperNotes: workflowResult.shipper_notes,
 			carrierNotes: workflowResult.carrier_notes,
 			fileUrls: workflowResult.file_urls,
@@ -117,6 +119,7 @@ export const getAllWorkflowsByUserId = async ({
 				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
+				workflowAssignedVehicle: workflow.workflow_assigned_vehicle,
 				shipperNotes: workflow.shipper_notes,
 				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
@@ -194,6 +197,7 @@ export const getWorkflowsByStatusGroup = async ({
 				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
+				workflowAssignedVehicle: workflow.workflow_assigned_vehicle,
 				shipperNotes: workflow.shipper_notes,
 				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
@@ -244,6 +248,7 @@ export const getAllWorkflowsByCarrierId = async ({
 				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
+				workflowAssignedVehicle: workflow.workflow_assigned_vehicle,
 				shipperNotes: workflow.shipper_notes,
 				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
@@ -321,6 +326,7 @@ export const getWorkflowsByStatusGroupCarrierId = async ({
 				},
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
+				workflowAssignedVehicle: workflow.workflow_assigned_vehicle,
 				shipperNotes: workflow.shipper_notes,
 				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
@@ -357,6 +363,7 @@ export const getWorkflowsByDriverId = async ({
 				status: workflow.status,
 				workflowAddressData: workflow.workflow_address_data,
 				workflowContainerData: workflow.workflow_container_data,
+				workflowAssignedVehicle: workflow.workflow_assigned_vehicle,
 				shipperNotes: workflow.shipper_notes,
 				carrierNotes: workflow.carrier_notes,
 				fileUrls: workflow.file_urls,
@@ -396,6 +403,7 @@ export const getLatestWorkflowByDriverId = async ({
 			status: result.status,
 			workflowAddressData: result.workflow_address_data,
 			workflowContainerData: result.workflow_container_data,
+			workflowAssignedVehicle: result.workflow_assigned_vehicle,
 			shipperNotes: result.shipper_notes,
 			carrierNotes: result.carrier_notes,
 			fileUrls: result.file_urls,
@@ -656,8 +664,14 @@ export const editWorkflow = async ({
 	try {
 		const numericId = parseInt(workflowId, 10);
 
-		const { status, assignedDriver, carrierNotes, uploadedFiles, driverNotes } =
-			workflowData;
+		const {
+			status,
+			assignedDriver,
+			assignedVehicle,
+			carrierNotes,
+			uploadedFiles,
+			driverNotes,
+		} = workflowData;
 
 		const workflowDataDb: { [key: string]: any } = {};
 
@@ -669,6 +683,14 @@ export const editWorkflow = async ({
 			workflowDataDb.assigned_driver = assignedDriver;
 		} else {
 			workflowDataDb.assigned_driver = null;
+		}
+
+		if (assignedVehicle && assignedVehicle.vehicleNumber) {
+			const workflowAssignedVehicleDB = {
+				vehicleNumber: assignedVehicle.vehicleNumber,
+			};
+
+			workflowDataDb.workflow_assigned_vehicle = workflowAssignedVehicleDB;
 		}
 
 		if (carrierNotes) {

@@ -55,6 +55,10 @@ export type WorkflowContainerDataType = {
 	vesselName?: string;
 };
 
+export type WorkflowAssignedVehicleDataType = {
+	vehicleNumber?: string;
+};
+
 export type WorkflowNotesDataType = {
 	shipperNotes?: string;
 	carrierNotes?: string;
@@ -68,6 +72,7 @@ export type WorkflowType = {
 	assignedDriver?: number;
 	workflowAddressData: WorkflowAddressDataType;
 	workflowContainerData: WorkflowContainerDataType;
+	assignedVehicle: WorkflowAssignedVehicleDataType;
 	workflowNotes: WorkflowNotesDataType;
 	carrierNotes: string;
 	shipperNotes: string;
